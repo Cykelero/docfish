@@ -1,0 +1,35 @@
+<div class="class-member class-method" id="{{{name}}}">
+	<h4 class="class-method-signatures">
+		{{#each signatures}}
+			{{#if ../returns}}
+				<code class="class-method-returntype">{{{../../returns}}}</code>
+			{{/if}}
+			<code class="class-method-signature">{{{../name}}}({{{this}}})</code>
+		{{/each}}
+	</h4>
+	<div class="class-member-content {{{typeborder-class}}}">
+		{{#if discussion}}
+			<div class="discussion class-method-discussion">{{{discussion}}}</div>
+		{{/if}}
+		{{#if arguments.length}}
+			<table class="class-method-arguments">
+				<tbody>
+					{{#each arguments}}
+						<tr>
+							<td class="{{{nameTypeClass}}}">{{{name}}}</td>
+							<td>
+								{{{description}}}
+								{{#if default}}
+									<span class="class-method-argument-default">Defaults to <code>{{{default}}}</code>.</span>
+								{{/if}}
+							</td>
+						</tr>
+					{{/each}}
+				</tbody>
+			</table>
+		{{/if}}
+		{{#if sample}}
+			<pre class="sample class-method-sample hljs"><code>{{{sample}}}</code></pre>
+		{{/if}}
+	</div>
+</div>

@@ -1,0 +1,23 @@
+<div class="page class">
+	<h1>{{{name}}}</h1>
+	{{#if discussion}}
+		<h2 id="overview">Overview</h2>
+		<div class="discussion class-discussion">
+			{{{discussion}}}
+		</div>
+	{{/if}}
+	{{#if memberGroups.length}}
+		<h2 id="members">Properties and methods</h2>
+		<div class="class-member-groups">
+			{{#each memberGroups}}
+				{{{this}}}
+			{{/each}}
+		</div>
+	{{/if}}
+	{{#if related}}
+		<h2 id="related">Related classes</h2>
+		<div class="discussion class-related">
+			{{{related}}}
+		</div>
+	{{/if}}
+</div>
