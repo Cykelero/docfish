@@ -1,5 +1,11 @@
 /* General */
 
+* {
+	transition-property: none;
+	transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
+	transition-duration: .25s;
+}
+
 .page {
 	display: block;
 	
@@ -131,13 +137,7 @@ code {
 /* Specific */
 
 .class-member {
-	margin-bottom: 28px;
-	
-	overflow-y: hidden;
-	
-	transition-property: margin-bottom;
-	transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
-	transition-duration: .3s;
+	padding-bottom: 20px;
 }
 
 h3 + .class-member {
@@ -154,7 +154,7 @@ h3 + .class-member {
 }
 
 .class-member.folded {
-	margin-bottom: 8px;
+	padding-bottom: 6px;
 }
 
 .class-method-returntype {
@@ -170,18 +170,6 @@ h3 + .class-member {
 	
 	padding-left: 13px;
 	border-left: 2px solid #c4c4c4;
-	
-	transition-property: height, opacity;
-	transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
-	transition-duration: .3s;
-}
-
-.class-member:not(.folded) .class-member-content > * {
-	/* display: none; */
-}
-
-.class-member.folded .class-member-content {
-	opacity: 0;
 }
 
 .class-method-arguments {

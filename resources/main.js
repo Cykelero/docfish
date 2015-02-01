@@ -15,15 +15,13 @@ function Member(node) {
 	this.titleNode.addEventListener("mousedown", this.startTitleClickTracking.bind(this));
 	
 	// // Start closed
-	this.contentNode.style.height = "0px";
-	this.node.style.transitionProperty = "none";
+	this.contentNode.style.display = "none";
 	this.node.classList.add("folded");
 };
 
 Member.prototype = {
 	folded: true,
 	preventNextToggle: false,
-	
 	foldEndTimeout: null,
 	
 	titleClickStartPosition: null,
@@ -38,8 +36,7 @@ Member.prototype = {
 		var self = this;
 		
 		if (this.foldEndTimeout) {
-			clearTimeout(this.foldEndTimeout);
-			this.foldEndTimeout = null;
+			this.foldEndTimeout.triggerNow();
 		}
 		
 		// Set folded
@@ -47,45 +44,74 @@ Member.prototype = {
 			this.folded = fold;
 			
 			var startHeight,
-				targetHeight;
+				endHeight,
+				offset,
+				startBottomPadding,
+				endBottomPadding;
 			
-			// Start by disabling transitions
-			this.contentNode.style.transitionProperty = "none";
+			// Measure current dimensions
+			startHeight = this.node.offsetHeight;
+			startBottomPadding = parseInt(getComputedStyle(this.node).paddingBottom);
 			
-			// Measure start/target heights
-			startHeight = this.contentNode.offsetHeight;
+			// Fold/unfold, measure new dimensions
+			this.contentNode.style.display = fold ? "none" : "";
+			this.contentNode.style.opacity = fold ? "1" : "0";
+			this.node.classList.toggle("folded", fold);
 			
-			if (fold) {
-				targetHeight = 0;
-			} else {
-				this.contentNode.style.height = "";
-				targetHeight = this.contentNode.offsetHeight;
-			}
+			endHeight = this.node.offsetHeight;
+			endBottomPadding = parseInt(getComputedStyle(this.node).paddingBottom);
+			offset = startHeight - endHeight;
 			
-			// Setup transition
-			this.contentNode.style.height = startHeight + "px";
+			this.contentNode.style.display = "";
 			
-			requestAnimationFrame(function() {
-				// Start content transition
-				self.contentNode.style.transitionProperty = "";
-				self.contentNode.style.height = targetHeight + "px";
+			// Create white mask
+			var maskTopMargin = fold ? -(Math.abs(offset)) : -startBottomPadding,
+				maskBottomMargin = fold ? (startBottomPadding - endBottomPadding) - (Math.abs(offset)) : (startBottomPadding) - (Math.abs(offset));
 			
-				// Start container transition
-				self.node.style.transitionProperty = "";
-				self.node.classList.toggle("folded", fold);
-				
-				// Set foldEndTimeout
-				self.foldEndTimeout = setTimeout(function() {
-					if (targetHeight != 0) {
-						self.contentNode.style.transitionProperty = "none";
-						self.contentNode.style.height = "";
-						
-						self.node.style.transitionProperty = "none";
-						
-						self.foldEndTimeout = null;
-					}
-				}, .3 * 1000); // value from CSS
+			var maskNode = document.createElement("div");
+			maskNode.style.display = "block";
+			maskNode.style.background = "white";
+			maskNode.style.width = "100%";
+			maskNode.style.height = Math.abs(offset) + "px";
+			maskNode.style.marginTop = maskTopMargin + "px";
+			maskNode.style.marginBottom = maskBottomMargin + "px";
+			
+			this.node.parentNode.insertBefore(maskNode, this.node.nextSibling);
+			
+			// Move subsequent nodes back to their original position
+			var nodesToShift = this.getFollowingNodes(true);
+			
+			nodesToShift.forEach(function(nodeToPush) {
+				nodeToPush.style.transitionProperty = "none";
+				nodeToPush.style.transform = 
+				nodeToPush.style.webkitTransform = "translate(0, " + offset + "px)";
 			});
+			
+			setTimeout(function() {
+				// Animate subsequent nodes to their natural position
+				nodesToShift.forEach(function(nodeToPush) {
+					nodeToPush.style.transitionProperty = "transform";
+					nodeToPush.style.transitionProperty = "-webkit-transform";
+					nodeToPush.style.transform = 
+					nodeToPush.style.webkitTransform = "";
+				});
+				
+				// Animate content opacity
+				self.contentNode.style.transitionProperty = "opacity";
+				self.contentNode.style.opacity = fold ? "0" : "1";
+				
+				// When animation is finished, clean up
+				var animationDuration = parseFloat(getComputedStyle(self.node).transitionDuration);
+				this.foldEndTimeout = new Timeout(function() {
+					if (fold) {
+						self.contentNode.style.display = "none";
+					} else {
+						self.contentNode.style.display = "";
+					}
+					
+					maskNode.parentNode.removeChild(maskNode);
+				}, animationDuration * 1000);
+			}, 0);
 		}
 		
 		// If opening, scroll to reveal
@@ -93,7 +119,7 @@ Member.prototype = {
 			var nodeDimensions = this.node.getBoundingClientRect(),
 				titleNodeDimensions = this.titleNode.getBoundingClientRect(),
 				nodeTop = nodeDimensions.top + window.scrollY,
-				nodeBottom = nodeTop + targetHeight + titleNodeDimensions.height + 27,
+				nodeBottom = nodeTop + endHeight + titleNodeDimensions.height + 27,
 				minScroll = nodeBottom - window.innerHeight,
 				maxScroll = nodeTop - 5;
 			
@@ -155,6 +181,46 @@ Member.prototype = {
 		delete this.titleClickStartPosition;
 		delete this.boundEndTrackingFunction;
 		
+	},
+	
+	getFollowingNodes: function(excludeTextNodes) {
+		var result = [];
+		
+		var currentNode = this.node;
+		while (true) {
+			// Find next node
+			if (currentNode.nextSibling) {
+				currentNode = currentNode.nextSibling;
+			} else {
+				currentNode = currentNode.parentNode;
+				if (currentNode == document.body) break;
+				continue;
+			}
+			if (currentNode.nodeType == 1) result.push(currentNode);
+		};
+		
+		return result;
+	}
+};
+
+Timeout = function(callback, delay) {
+	this.callback = callback;
+	this.hasTriggered = false;
+	
+	// Init
+	setTimeout(this.triggerNow.bind(this), delay);
+};
+
+Timeout.prototype = {
+	triggerNow: function() {
+		if (!this.hasTriggered) {
+			this.hasTriggered = true;
+			this.callback();
+		}
+	},
+	
+	cancel: function() {
+		this.hasTriggered = true;
 	}
 };
 
