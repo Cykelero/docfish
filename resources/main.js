@@ -1,3 +1,6 @@
+// Constants
+var animationDuration;
+
 // Variables
 var members = [];
 
@@ -101,7 +104,6 @@ Member.prototype = {
 				self.contentNode.style.opacity = fold ? "0" : "1";
 				
 				// When animation is finished, clean up
-				var animationDuration = parseFloat(getComputedStyle(self.node).transitionDuration);
 				this.foldEndTimeout = new Timeout(function() {
 					if (fold) {
 						self.contentNode.style.display = "none";
@@ -110,7 +112,7 @@ Member.prototype = {
 					}
 					
 					maskNode.parentNode.removeChild(maskNode);
-				}, animationDuration * 1000);
+				}, animationDuration);
 			}, 0);
 		}
 		
@@ -127,10 +129,10 @@ Member.prototype = {
 			
 			if (window.scrollY > maxScroll) {
 				// Animate scroll
-				animateScroll(+new Date(), .2 * 1000, maxScroll);
+				animateScroll(+new Date(), animationDuration, maxScroll);
 			} else if (window.scrollY < minScroll) {
 				// Animate scroll
-				animateScroll(+new Date(), .2 * 1000, minScroll);
+				animateScroll(+new Date(), animationDuration, minScroll);
 			}
 		}
 	},
@@ -266,6 +268,9 @@ function getMemberById(id) {
 
 // Initialization
 document.addEventListener("DOMContentLoaded", function() {
+	// Retrieve default animation duration
+	animationDuration = parseFloat(getComputedStyle(document.body).transitionDuration) * 1000;
+	
 	// Create Member objects
 	var memberNodes = document.getElementsByClassName("class-member");
 	for (var m = 0; m < memberNodes.length; m++) {
