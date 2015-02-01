@@ -144,6 +144,10 @@ h3 + .class-member {
 	margin-top: 24px;
 }
 
+.class-method-argument {
+	font-style: italic;
+}
+
 .class-member h4 {
 	margin: 0 0 10px;
 
@@ -165,7 +169,7 @@ h3 + .class-member {
 	margin-left: 4px;
 }
 
-.class-method-signature-argument {
+.class-method-signature-argument-block {
 	white-space: nowrap;
 }
 

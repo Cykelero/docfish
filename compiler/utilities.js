@@ -63,11 +63,16 @@ module.exports = {
 			text = text.split('{df:' + placeholder.name + '}').join(placeholder.value);
 		});
 		
-		// Documentation links
+		// Docfish tags
+		// // Documentation links
 		text = text.replace(/<df-link target="([^"]*)">(.*?)<\/df-link>/g, function(tag, linkTarget, linkText) {
 			linkTarget = linkTarget.replace(/(#.*)?$/, '.html$1');
 			return '<a href="' + linkTarget + '">' + linkText + '</a>';
 		});
+		
+		// // Arguments
+		text = text.replace(/<df-arg>/g, '<span class="class-method-argument">');
+		text = text.replace(/<\/df-arg>/g, '</span>');
 		
 		return text;
 	},
@@ -97,7 +102,11 @@ module.exports = {
 		
 		return text.replace(/([A-Z]\w*) (\w+)( = [^ \],])?/g, function(argument, argumentType, argumentName, defaultValue) {
 			defaultValue = defaultValue || '';
-			return '<span class="class-method-signature-argument">' + self.colorTypes(argumentType) + ' ' + argumentName + defaultValue + '</span>';
+			return '<span class="class-method-signature-argument-block">'
+				+ self.colorTypes(argumentType)
+				+ ' <span class="class-method-argument">' + argumentName + '</span>'
+				+ defaultValue
+				+ '</span>';
 		});
 	},
 	

@@ -16,7 +16,9 @@
 				<tbody>
 					{{#each arguments}}
 						<tr>
-							<td class="{{{nameTypeClass}}}">{{{name}}}</td>
+							<td class="{{{nameTypeClass}}}">
+								<span class="class-method-argument">{{{name}}}</span>
+							</td>
 							<td>
 								{{{description}}}
 								{{#if default}}
