@@ -119,7 +119,7 @@ Member.prototype = {
 			var nodeDimensions = this.node.getBoundingClientRect(),
 				titleNodeDimensions = this.titleNode.getBoundingClientRect(),
 				nodeTop = nodeDimensions.top + window.scrollY,
-				nodeBottom = nodeTop + endHeight + titleNodeDimensions.height + 27,
+				nodeBottom = nodeTop + endHeight,
 				minScroll = nodeBottom - window.innerHeight,
 				maxScroll = nodeTop - 5;
 			
