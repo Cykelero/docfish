@@ -295,6 +295,12 @@ document.addEventListener("DOMContentLoaded", function() {
 			}
 		}
 	}
+	
+	// If a hash is specified, reveal the corresponding member
+	var hash = location.hash.slice(1);
+	setTimeout(function() {
+		getMemberById(hash).setFolded(false, true);
+	}, 100);
 });
 
 window.addEventListener("hashchange", function() {
