@@ -165,6 +165,10 @@ h3 + .class-member {
 	margin-left: 4px;
 }
 
+.class-method-signature-argument {
+	white-space: nowrap;
+}
+
 .class-member-content {
 	margin-left: 6px;
 	

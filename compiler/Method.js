@@ -41,7 +41,8 @@ module.exports.prototype = {
 		var text = Utils.text.bind(Utils, parentClass),
 			code = Utils.code.bind(Utils, parentClass),
 			colorTypes = Utils.colorTypes.bind(Utils),
-			toTypeName = Utils.toTypeName.bind(Utils);
+			toTypeName = Utils.toTypeName.bind(Utils),
+			functionSignature = Utils.functionSignature.bind(Utils);
 		
 		var typeborderClass = 'df-typeborder-' + (this.returns ? toTypeName(this.returns) : 'undefined'),
 			args = this.arguments.map(function(argument) {
@@ -60,7 +61,7 @@ module.exports.prototype = {
 			
 			'typeborder-class': typeborderClass,
 			
-			signatures: this.signatures.map(text).map(colorTypes),
+			signatures: this.signatures.map(text).map(functionSignature),
 			arguments: args,
 			
 			discussion: text(this.discussion),

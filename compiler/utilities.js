@@ -92,6 +92,15 @@ module.exports = {
 		});
 	},
 	
+	functionSignature: function(text) {
+		var self = this;
+		
+		return text.replace(/([A-Z]\w*) (\w+)( = [^ \],])?/g, function(argument, argumentType, argumentName, defaultValue) {
+			defaultValue = defaultValue || '';
+			return '<span class="class-method-signature-argument">' + self.colorTypes(argumentType) + ' ' + argumentName + defaultValue + '</span>';
+		});
+	},
+	
 	// Other
 	toTypeName: function(type) {
 		var types = ['string', 'number', 'boolean', 'function', 'regexp', 'undefined', 'null'];
