@@ -232,26 +232,26 @@ function animateScroll(startDate, duration, endScroll) {
 	
 	var lastScroll = startScroll;
 	
-	function updateScroll() {
-		if (window.scrollY != lastScroll){
-			// User overrided the scroll animation
+	requestAnimationFrame(function updateScroll() {
+		// Stop scrolling if user overrides
+		if (window.scrollY != lastScroll) {
 			return;
 		}
 		
-		var progress = (new Date() - startDate) / duration;
-		progress = Math.sin(progress * Math.PI / 2);
-		
-		var interpolatedValue =  progress * (endScroll - startScroll) + startScroll;
-		scrollTo(0, interpolatedValue);
-		
-		lastScroll = window.scrollY;
-		
 		if (new Date() < endDate) {
+			var progress = (new Date() - startDate) / duration;
+			progress = Math.sin(progress * Math.PI / 2);
+			
+			var interpolatedValue =  progress * (endScroll - startScroll) + startScroll;
+			scrollTo(0, interpolatedValue);
+			
+			lastScroll = window.scrollY;
+			
 			requestAnimationFrame(updateScroll);
+		} else {
+			scrollTo(0, endScroll);
 		}
-	}
-	
-	requestAnimationFrame(updateScroll);
+	});
 };
 
 function getMemberById(id) {
@@ -304,11 +304,14 @@ document.addEventListener("DOMContentLoaded", function() {
 	// If a hash is specified, reveal the corresponding member
 	var hash = location.hash.slice(1);
 	setTimeout(function() {
-		getMemberById(hash).setFolded(false, true);
+		var focusedMember = getMemberById(hash);
+		if (focusedMember) focusedMember.setFolded(false, true);
 	}, 100);
 });
 
 window.addEventListener("hashchange", function() {
-	var hash = location.hash.slice(1);
-	getMemberById(hash).setFolded(false, true);
+	var hash = location.hash.slice(1),
+		focusedMember = getMemberById(hash);
+	
+	if (focusedMember) focusedMember.setFolded(false, true);
 });
