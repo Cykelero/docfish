@@ -50,11 +50,20 @@ Member.prototype = {
 				endHeight,
 				offset,
 				startBottomPadding,
-				endBottomPadding;
+				endBottomPadding,
+				
+				currentScrollPosition,
+				distanceToBottom,
+				willScrollBy,
+				
+				precedingNodes,
+				followingNodes;
 			
 			// Measure current dimensions
 			startHeight = this.node.offsetHeight;
 			startBottomPadding = parseInt(getComputedStyle(this.node).paddingBottom);
+			currentScrollPosition = scrollY;
+			distanceToBottom = document.body.scrollHeight - window.innerHeight - currentScrollPosition;
 			
 			// Fold/unfold, measure new dimensions
 			this.contentNode.style.display = fold ? "none" : "";
@@ -66,6 +75,14 @@ Member.prototype = {
 			offset = startHeight - endHeight;
 			
 			this.contentNode.style.display = "";
+			
+			// Measure forced page scroll (when closing)
+			willScrollBy = Math.max(0, offset - distanceToBottom);
+			
+			// // Preemptively scroll
+			if (willScrollBy > 0) {
+				scrollTo(0, currentScrollPosition - willScrollBy);
+			}
 			
 			// Create white mask
 			var maskTopMargin = fold ? -(Math.abs(offset)) : -startBottomPadding,
@@ -82,17 +99,30 @@ Member.prototype = {
 			this.node.parentNode.insertBefore(maskNode, this.node.nextSibling);
 			
 			// Move subsequent nodes back to their original position
-			var nodesToShift = this.getFollowingNodes(true);
+			followingNodes = this.getNodesInDirection(true, true);
 			
-			nodesToShift.forEach(function(nodeToPush) {
+			if (willScrollBy > 0) {
+				precedingNodes = this.getNodesInDirection(false, true);
+				precedingNodes.push(this.node);
+			} else {
+				precedingNodes = [];
+			}
+			
+			followingNodes.forEach(function(nodeToPush) {
 				nodeToPush.style.transitionProperty = "none";
 				nodeToPush.style.transform = 
-				nodeToPush.style.webkitTransform = "translate(0, " + offset + "px)";
+				nodeToPush.style.webkitTransform = "translate(0, " + (offset - willScrollBy) + "px)";
+			});
+			
+			precedingNodes.forEach(function(nodeToPush) {
+				nodeToPush.style.transitionProperty = "none";
+				nodeToPush.style.transform = 
+				nodeToPush.style.webkitTransform = "translate(0, " + (-willScrollBy) + "px)";
 			});
 			
 			setTimeout(function() {
 				// Animate subsequent nodes to their natural position
-				nodesToShift.forEach(function(nodeToPush) {
+				followingNodes.concat(precedingNodes).forEach(function(nodeToPush) {
 					nodeToPush.style.transitionProperty = "transform";
 					nodeToPush.style.transitionProperty = "-webkit-transform";
 					nodeToPush.style.transform = 
@@ -185,14 +215,16 @@ Member.prototype = {
 		
 	},
 	
-	getFollowingNodes: function(excludeTextNodes) {
+	getNodesInDirection: function(following, excludeTextNodes) {
 		var result = [];
+		var adjacentProperty = following ? "nextSibling" : "previousSibling";
 		
 		var currentNode = this.node;
 		while (true) {
-			// Find next node
-			if (currentNode.nextSibling) {
-				currentNode = currentNode.nextSibling;
+			// Find next/previous node
+			var adjacentNode = currentNode[following ? "nextSibling" : "previousSibling"];
+			if (adjacentNode) {
+				currentNode = adjacentNode;
 			} else {
 				currentNode = currentNode.parentNode;
 				if (currentNode == document.body) break;
