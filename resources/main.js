@@ -76,12 +76,33 @@ Member.prototype = {
 			
 			this.contentNode.style.display = "";
 			
-			// Measure forced page scroll (when closing)
-			willScrollBy = Math.max(0, offset - distanceToBottom);
+			// Handle scroll
+			willScrollBy = 0;
 			
-			// // Preemptively scroll
-			if (willScrollBy > 0) {
-				scrollTo(0, currentScrollPosition - willScrollBy);
+			// // Scroll to reveal
+			if (!fold && scrollToReveal) {
+				var nodeDimensions = this.node.getBoundingClientRect(),
+					nodeTop = nodeDimensions.top + window.scrollY,
+					nodeBottom = nodeTop + endHeight,
+					minScroll = nodeBottom - window.innerHeight,
+					maxScroll = nodeTop - 5;
+				
+				minScroll = Math.min(minScroll, maxScroll); // maxScroll has the priority
+				
+				if (window.scrollY > maxScroll) {
+					willScrollBy = maxScroll - currentScrollPosition;
+				} else if (window.scrollY < minScroll) {
+					willScrollBy = minScroll - currentScrollPosition;
+				}
+			}
+			
+			// // Limit scroll to page edge
+			willScrollBy = Math.max(-currentScrollPosition, willScrollBy);
+			willScrollBy = Math.min(distanceToBottom - offset, willScrollBy);
+						
+			// // Apply scroll immediately
+			if (willScrollBy) {
+				scrollTo(0, currentScrollPosition + willScrollBy);
 			}
 			
 			// Create white mask
@@ -101,7 +122,7 @@ Member.prototype = {
 			// Move subsequent nodes back to their original position
 			followingNodes = this.getNodesInDirection(true, true);
 			
-			if (willScrollBy > 0) {
+			if (willScrollBy) {
 				precedingNodes = this.getNodesInDirection(false, true);
 				precedingNodes.push(this.node);
 			} else {
@@ -111,13 +132,13 @@ Member.prototype = {
 			followingNodes.forEach(function(nodeToPush) {
 				nodeToPush.style.transitionProperty = "none";
 				nodeToPush.style.transform = 
-				nodeToPush.style.webkitTransform = "translate(0, " + (offset - willScrollBy) + "px)";
+				nodeToPush.style.webkitTransform = "translate(0, " + (offset + willScrollBy) + "px)";
 			});
 			
 			precedingNodes.forEach(function(nodeToPush) {
 				nodeToPush.style.transitionProperty = "none";
 				nodeToPush.style.transform = 
-				nodeToPush.style.webkitTransform = "translate(0, " + (-willScrollBy) + "px)";
+				nodeToPush.style.webkitTransform = "translate(0, " + (willScrollBy) + "px)";
 			});
 			
 			setTimeout(function() {
@@ -144,26 +165,6 @@ Member.prototype = {
 					maskNode.parentNode.removeChild(maskNode);
 				}, animationDuration);
 			}, 0);
-		}
-		
-		// If opening, scroll to reveal
-		if (!fold && scrollToReveal) {
-			var nodeDimensions = this.node.getBoundingClientRect(),
-				titleNodeDimensions = this.titleNode.getBoundingClientRect(),
-				nodeTop = nodeDimensions.top + window.scrollY,
-				nodeBottom = nodeTop + endHeight,
-				minScroll = nodeBottom - window.innerHeight,
-				maxScroll = nodeTop - 5;
-			
-			minScroll = Math.min(minScroll, maxScroll); // maxScroll has the priority
-			
-			if (window.scrollY > maxScroll) {
-				// Animate scroll
-				animateScroll(+new Date(), animationDuration, maxScroll);
-			} else if (window.scrollY < minScroll) {
-				// Animate scroll
-				animateScroll(+new Date(), animationDuration, minScroll);
-			}
 		}
 	},
 	
@@ -256,34 +257,6 @@ Timeout.prototype = {
 	cancel: function() {
 		this.hasTriggered = true;
 	}
-};
-
-function animateScroll(startDate, duration, endScroll) {
-	var endDate = startDate + duration,
-		startScroll = window.scrollY;
-	
-	var lastScroll = startScroll;
-	
-	requestAnimationFrame(function updateScroll() {
-		// Stop scrolling if user overrides
-		if (window.scrollY != lastScroll) {
-			return;
-		}
-		
-		if (new Date() < endDate) {
-			var progress = (new Date() - startDate) / duration;
-			progress = Math.sin(progress * Math.PI / 2);
-			
-			var interpolatedValue =  progress * (endScroll - startScroll) + startScroll;
-			scrollTo(0, interpolatedValue);
-			
-			lastScroll = window.scrollY;
-			
-			requestAnimationFrame(updateScroll);
-		} else {
-			scrollTo(0, endScroll);
-		}
-	});
 };
 
 function getMemberById(id) {
