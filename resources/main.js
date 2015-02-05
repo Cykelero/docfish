@@ -175,6 +175,9 @@ Member.prototype = {
 						maskNode.parentNode.removeChild(maskNode);
 					}, animationDuration);
 				}, 0);
+				
+				// Update hash
+				updateHash();
 			}
 		}.bind(this));
 	},
@@ -271,15 +274,32 @@ Timeout.prototype = {
 };
 
 function getMemberById(id) {
-	var result = null;
-	
-	members.forEach(function(member) {
+	for (var m = 0; m < members.length; m++) {
+		var member = members[m];
 		if (member.id == id) {
-			result = member;
+			return member;
 		}
-	});
+	};
 	
-	return result
+	return null;
+};
+
+function updateHash() {
+	var currentURLWithoutHash = location.href.match(/([^#]+)(#|$)/)[1],
+		currentHash = location.hash.slice(1),
+		firstOpenMemberNode = document.querySelector(".class-member:not(.folded)");
+	
+	if (firstOpenMemberNode) {
+		var newHash = firstOpenMemberNode.id;
+		if (currentHash != newHash) {
+			history.pushState(null, null, currentURLWithoutHash + "#" + newHash);
+		}
+	} else {
+		newHash = "";
+		if (/#/.test(location.href)) {
+			history.pushState(null, null, currentURLWithoutHash);
+		}
+	}
 };
 
 // Initialization
@@ -306,9 +326,6 @@ document.addEventListener("DOMContentLoaded", function() {
 			if (nodeTargetId.length) {
 				aNode.addEventListener("click", function(event) {
 					event.preventDefault();
-					
-					var currentURLWithoutHash = location.href.match(/([^#]+)(#|$)/)[1];
-					history.pushState(nodeTargetId, null, currentURLWithoutHash + "#" + nodeTargetId);
 					
 					var member = getMemberById(nodeTargetId);
 					if (member) member.setFolded(false, true);
