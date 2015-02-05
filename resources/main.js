@@ -120,13 +120,17 @@ Member.prototype = {
 			this.node.parentNode.insertBefore(maskNode, this.node.nextSibling);
 			
 			// Move subsequent nodes back to their original position
+			precedingNodes = this.getNodesInDirection(false, true);
+			precedingNodes.push(this.node);
+			
 			followingNodes = this.getNodesInDirection(true, true);
 			
 			if (willScrollBy) {
-				precedingNodes = this.getNodesInDirection(false, true);
-				precedingNodes.push(this.node);
-			} else {
-				precedingNodes = [];
+				precedingNodes.forEach(function(nodeToPush) {
+					nodeToPush.style.transitionProperty = "none";
+					nodeToPush.style.transform = 
+					nodeToPush.style.webkitTransform = "translate(0, " + willScrollBy + "px)";
+				});
 			}
 			
 			followingNodes.forEach(function(nodeToPush) {
@@ -135,20 +139,25 @@ Member.prototype = {
 				nodeToPush.style.webkitTransform = "translate(0, " + (offset + willScrollBy) + "px)";
 			});
 			
-			precedingNodes.forEach(function(nodeToPush) {
-				nodeToPush.style.transitionProperty = "none";
-				nodeToPush.style.transform = 
-				nodeToPush.style.webkitTransform = "translate(0, " + (willScrollBy) + "px)";
-			});
-			
 			setTimeout(function() {
 				// Animate subsequent nodes to their natural position
-				followingNodes.concat(precedingNodes).forEach(function(nodeToPush) {
-					nodeToPush.style.transitionProperty = "transform";
-					nodeToPush.style.transitionProperty = "-webkit-transform";
-					nodeToPush.style.transform = 
-					nodeToPush.style.webkitTransform = "";
-				});
+				if (willScrollBy) {
+					precedingNodes.forEach(function(nodeToPush) {
+						nodeToPush.style.transitionProperty = "transform";
+						nodeToPush.style.transitionProperty = "-webkit-transform";
+						nodeToPush.style.transform = 
+						nodeToPush.style.webkitTransform = "";
+					});
+				}
+				
+				if (offset + willScrollBy) {
+					followingNodes.forEach(function(nodeToPush) {
+						nodeToPush.style.transitionProperty = "transform";
+						nodeToPush.style.transitionProperty = "-webkit-transform";
+						nodeToPush.style.transform = 
+						nodeToPush.style.webkitTransform = "";
+					});
+				}
 				
 				// Animate content opacity
 				self.contentNode.style.transitionProperty = "opacity";
