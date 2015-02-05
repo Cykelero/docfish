@@ -38,143 +38,145 @@ Member.prototype = {
 	setFolded: function(fold, scrollToReveal) {
 		var self = this;
 		
-		if (this.foldEndTimeout) {
-			this.foldEndTimeout.triggerNow();
-		}
-		
-		// Set folded
-		if (fold != this.folded) {
-			this.folded = fold;
+		requestAnimationFrame(function() {
+			if (this.foldEndTimeout) {
+				this.foldEndTimeout.triggerNow();
+			}
 			
-			var startHeight,
-				endHeight,
-				offset,
-				startBottomPadding,
-				endBottomPadding,
+			// Set folded
+			if (fold != this.folded) {
+				this.folded = fold;
 				
-				currentScrollPosition,
-				distanceToBottom,
-				willScrollBy,
+				var startHeight,
+					endHeight,
+					offset,
+					startBottomPadding,
+					endBottomPadding,
+					
+					currentScrollPosition,
+					distanceToBottom,
+					willScrollBy,
+					
+					precedingNodes,
+					followingNodes;
 				
-				precedingNodes,
-				followingNodes;
-			
-			// Measure current dimensions
-			startHeight = this.node.offsetHeight;
-			startBottomPadding = parseInt(getComputedStyle(this.node).paddingBottom);
-			currentScrollPosition = scrollY;
-			distanceToBottom = document.body.scrollHeight - window.innerHeight - currentScrollPosition;
-			
-			// Fold/unfold, measure new dimensions
-			this.contentNode.style.display = fold ? "none" : "";
-			this.contentNode.style.opacity = fold ? "1" : "0";
-			this.node.classList.toggle("folded", fold);
-			
-			endHeight = this.node.offsetHeight;
-			endBottomPadding = parseInt(getComputedStyle(this.node).paddingBottom);
-			offset = startHeight - endHeight;
-			
-			this.contentNode.style.display = "";
-			
-			// Handle scroll
-			willScrollBy = 0;
-			
-			// // Scroll to reveal
-			if (!fold && scrollToReveal) {
-				var nodeDimensions = this.node.getBoundingClientRect(),
-					nodeTop = nodeDimensions.top + window.scrollY,
-					nodeBottom = nodeTop + endHeight,
-					minScroll = nodeBottom - window.innerHeight,
-					maxScroll = nodeTop - 5;
+				// Measure current dimensions
+				startHeight = this.node.offsetHeight;
+				startBottomPadding = parseInt(getComputedStyle(this.node).paddingBottom);
+				currentScrollPosition = scrollY;
+				distanceToBottom = document.body.scrollHeight - window.innerHeight - currentScrollPosition;
 				
-				minScroll = Math.min(minScroll, maxScroll); // maxScroll has the priority
+				// Fold/unfold, measure new dimensions
+				this.contentNode.style.display = fold ? "none" : "";
+				this.contentNode.style.opacity = fold ? "1" : "0";
+				this.node.classList.toggle("folded", fold);
 				
-				if (window.scrollY > maxScroll) {
-					willScrollBy = maxScroll - currentScrollPosition;
-				} else if (window.scrollY < minScroll) {
-					willScrollBy = minScroll - currentScrollPosition;
+				endHeight = this.node.offsetHeight;
+				endBottomPadding = parseInt(getComputedStyle(this.node).paddingBottom);
+				offset = startHeight - endHeight;
+				
+				this.contentNode.style.display = "";
+				
+				// Handle scroll
+				willScrollBy = 0;
+				
+				// // Scroll to reveal
+				if (!fold && scrollToReveal) {
+					var nodeDimensions = this.node.getBoundingClientRect(),
+						nodeTop = nodeDimensions.top + window.scrollY,
+						nodeBottom = nodeTop + endHeight,
+						minScroll = nodeBottom - window.innerHeight,
+						maxScroll = nodeTop - 5;
+					
+					minScroll = Math.min(minScroll, maxScroll); // maxScroll has the priority
+					
+					if (window.scrollY > maxScroll) {
+						willScrollBy = maxScroll - currentScrollPosition;
+					} else if (window.scrollY < minScroll) {
+						willScrollBy = minScroll - currentScrollPosition;
+					}
 				}
-			}
-			
-			// // Limit scroll to page edge
-			willScrollBy = Math.max(-currentScrollPosition, willScrollBy);
-			willScrollBy = Math.min(distanceToBottom - offset, willScrollBy);
-						
-			// // Apply scroll immediately
-			if (willScrollBy) {
-				scrollTo(0, currentScrollPosition + willScrollBy);
-			}
-			
-			// Create white mask
-			var maskTopMargin = fold ? -(Math.abs(offset)) : -startBottomPadding,
-				maskBottomMargin = fold ? (startBottomPadding - endBottomPadding) - (Math.abs(offset)) : (startBottomPadding) - (Math.abs(offset));
-			
-			var maskNode = document.createElement("div");
-			maskNode.style.display = "block";
-			maskNode.style.background = "white";
-			maskNode.style.width = "100%";
-			maskNode.style.height = Math.abs(offset) + "px";
-			maskNode.style.marginTop = maskTopMargin + "px";
-			maskNode.style.marginBottom = maskBottomMargin + "px";
-			
-			this.node.parentNode.insertBefore(maskNode, this.node.nextSibling);
-			
-			// Move subsequent nodes back to their original position
-			precedingNodes = this.getNodesInDirection(false, true);
-			precedingNodes.push(this.node);
-			
-			followingNodes = this.getNodesInDirection(true, true);
-			
-			if (willScrollBy) {
-				precedingNodes.forEach(function(nodeToPush) {
-					nodeToPush.style.transitionProperty = "none";
-					nodeToPush.style.transform = 
-					nodeToPush.style.webkitTransform = "translate(0, " + willScrollBy + "px)";
-				});
-			}
-			
-			followingNodes.forEach(function(nodeToPush) {
-				nodeToPush.style.transitionProperty = "none";
-				nodeToPush.style.transform = 
-				nodeToPush.style.webkitTransform = "translate(0, " + (offset + willScrollBy) + "px)";
-			});
-			
-			setTimeout(function() {
-				// Animate subsequent nodes to their natural position
+				
+				// // Limit scroll to page edge
+				willScrollBy = Math.max(-currentScrollPosition, willScrollBy);
+				willScrollBy = Math.min(distanceToBottom - offset, willScrollBy);
+							
+				// // Apply scroll immediately
+				if (willScrollBy) {
+					scrollTo(0, currentScrollPosition + willScrollBy);
+				}
+				
+				// Create white mask
+				var maskTopMargin = fold ? -(Math.abs(offset)) : -startBottomPadding,
+					maskBottomMargin = fold ? (startBottomPadding - endBottomPadding) - (Math.abs(offset)) : (startBottomPadding) - (Math.abs(offset));
+				
+				var maskNode = document.createElement("div");
+				maskNode.style.display = "block";
+				maskNode.style.background = "white";
+				maskNode.style.width = "100%";
+				maskNode.style.height = Math.abs(offset) + "px";
+				maskNode.style.marginTop = maskTopMargin + "px";
+				maskNode.style.marginBottom = maskBottomMargin + "px";
+				
+				this.node.parentNode.insertBefore(maskNode, this.node.nextSibling);
+				
+				// Move subsequent nodes back to their original position
+				precedingNodes = this.getNodesInDirection(false, true);
+				precedingNodes.push(this.node);
+				
+				followingNodes = this.getNodesInDirection(true, true);
+				
 				if (willScrollBy) {
 					precedingNodes.forEach(function(nodeToPush) {
-						nodeToPush.style.transitionProperty = "transform";
-						nodeToPush.style.transitionProperty = "-webkit-transform";
+						nodeToPush.style.transitionProperty = "none";
 						nodeToPush.style.transform = 
-						nodeToPush.style.webkitTransform = "";
+						nodeToPush.style.webkitTransform = "translate(0, " + willScrollBy + "px)";
 					});
 				}
 				
-				if (offset + willScrollBy) {
-					followingNodes.forEach(function(nodeToPush) {
-						nodeToPush.style.transitionProperty = "transform";
-						nodeToPush.style.transitionProperty = "-webkit-transform";
-						nodeToPush.style.transform = 
-						nodeToPush.style.webkitTransform = "";
-					});
-				}
+				followingNodes.forEach(function(nodeToPush) {
+					nodeToPush.style.transitionProperty = "none";
+					nodeToPush.style.transform = 
+					nodeToPush.style.webkitTransform = "translate(0, " + (offset + willScrollBy) + "px)";
+				});
 				
-				// Animate content opacity
-				self.contentNode.style.transitionProperty = "opacity";
-				self.contentNode.style.opacity = fold ? "0" : "1";
-				
-				// When animation is finished, clean up
-				this.foldEndTimeout = new Timeout(function() {
-					if (fold) {
-						self.contentNode.style.display = "none";
-					} else {
-						self.contentNode.style.display = "";
+				setTimeout(function() {
+					// Animate subsequent nodes to their natural position
+					if (willScrollBy) {
+						precedingNodes.forEach(function(nodeToPush) {
+							nodeToPush.style.transitionProperty = "transform";
+							nodeToPush.style.transitionProperty = "-webkit-transform";
+							nodeToPush.style.transform = 
+							nodeToPush.style.webkitTransform = "";
+						});
 					}
 					
-					maskNode.parentNode.removeChild(maskNode);
-				}, animationDuration);
-			}, 0);
-		}
+					if (offset + willScrollBy) {
+						followingNodes.forEach(function(nodeToPush) {
+							nodeToPush.style.transitionProperty = "transform";
+							nodeToPush.style.transitionProperty = "-webkit-transform";
+							nodeToPush.style.transform = 
+							nodeToPush.style.webkitTransform = "";
+						});
+					}
+					
+					// Animate content opacity
+					self.contentNode.style.transitionProperty = "opacity";
+					self.contentNode.style.opacity = fold ? "0" : "1";
+					
+					// When animation is finished, clean up
+					this.foldEndTimeout = new Timeout(function() {
+						if (fold) {
+							self.contentNode.style.display = "none";
+						} else {
+							self.contentNode.style.display = "";
+						}
+						
+						maskNode.parentNode.removeChild(maskNode);
+					}, animationDuration);
+				}, 0);
+			}
+		}.bind(this));
 	},
 	
 	onTitleClick: function(event) {
