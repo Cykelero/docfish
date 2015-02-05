@@ -175,11 +175,12 @@ Member.prototype = {
 						maskNode.parentNode.removeChild(maskNode);
 					}, animationDuration);
 				}, 0);
-				
-				// Update hash
-				updateHash();
 			}
 		}.bind(this));
+		
+		setTimeout(function() {
+			updateHash();
+		}, 100);
 	},
 	
 	onTitleClick: function(event) {
