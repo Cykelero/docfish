@@ -13,8 +13,10 @@ module.exports = {
 	// Constants
 	buildPath: '../build/',
 	buildExtension: '.html',
-	sourcePath: '../source/',
-	sourceExtension: '.xml',
+	
+	classSourcePath: '../source/classes/',
+	classSourceExtension: '.xml',
+	
 	resourcesSourcePath: '../resources/',
 	resourcesDestinationPath: '../build/resources/',
 	
@@ -39,15 +41,16 @@ module.exports = {
 	
 	// Class management
 	loadClass: function(className) {
-		var xmlContents = Utils.read(this.sourcePath + className + this.sourceExtension);
+		var xmlContents = Utils.read(this.classSourcePath + className + this.classSourceExtension);
 			xmlDocument = new xmldom.DOMParser().parseFromString(xmlContents);
 		
 		classes[className] = new Klass(xmlDocument.documentElement);
 	},
 	
 	loadClasses: function(classes) {
-		classes.forEach(function(className) {
-			this.loadClass(className);
+		var filenames = fs.readdirSync(this.classSourcePath);
+		filenames.forEach(function(filename) {
+			this.loadClass(filename.slice(0, -this.classSourceExtension.length));
 		}, this);
 	},
 	
@@ -73,6 +76,15 @@ module.exports = {
 			html = html.replace(/( {4})/g, '\t');
 			Utils.write(self.buildPath + className + self.buildExtension, html);
 		});
+	},
+	
+	buildClassPages: function() {
+		for (var className in classes) {
+			if (!classes.hasOwnProperty(className)) continue;
+			
+			var classObject = classes[className];
+			if (classObject.public) this.buildClassPage(className);
+		}
 	},
 	
 	// Other

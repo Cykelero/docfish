@@ -11,5 +11,5 @@ Builder.setTitleBase('Candybox Reference');
 
 Builder.copyResources();
 
-Builder.loadClasses(['Color', 'ObjectPrimitive', 'SetMethod']);
-Builder.buildClassPage('Color');
+Builder.loadClasses();
+Builder.buildClassPages();
