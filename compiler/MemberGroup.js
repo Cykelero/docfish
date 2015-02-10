@@ -2,6 +2,7 @@ var Utils = require('./utilities.js');
 
 var Method = require('./Method.js');
 var Property = require('./Property.js');
+var Event = require('./Event.js');
 var Import = require('./Import.js');
 
 module.exports = function MemberGroup(classNode) {
@@ -20,6 +21,7 @@ module.exports = function MemberGroup(classNode) {
 		switch (memberNode.nodeName) {
 			case 'method': memberClass = Method; break;
 			case 'property': memberClass = Property; break;
+			case 'event': memberClass = Event; break;
 			case 'import': memberClass = Import; break;
 		}
 		
