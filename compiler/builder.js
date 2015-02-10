@@ -50,7 +50,9 @@ module.exports = {
 	loadClasses: function(classes) {
 		var filenames = fs.readdirSync(this.classSourcePath);
 		filenames.forEach(function(filename) {
-			this.loadClass(filename.slice(0, -this.classSourceExtension.length));
+			if (filename.slice(-4) == ".xml") {
+				this.loadClass(filename.slice(0, -this.classSourceExtension.length));
+			}
 		}, this);
 	},
 	
