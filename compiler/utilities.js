@@ -100,7 +100,7 @@ module.exports = {
 	functionSignature: function(text) {
 		var self = this;
 		
-		return text.replace(/([A-Z]\w*) (\w+)( = [^ \],])?/g, function(argument, argumentType, argumentName, defaultValue) {
+		return text.replace(/(([A-Z]\w*\|?)+) (\w+)( = [^ \],])?/g, function(argument, argumentType, lastArgumentType, argumentName, defaultValue) {
 			defaultValue = defaultValue || '';
 			return '<span class="class-method-signature-argument-block">'
 				+ self.colorTypes(argumentType)
@@ -112,10 +112,12 @@ module.exports = {
 	
 	// Other
 	toTypeName: function(type) {
-		var types = ['string', 'number', 'boolean', 'function', 'regexp', 'undefined', 'null'];
+		var types = ['string', 'number', 'boolean', 'function', 'undefined', 'null'];
 		
 		var lowercased = type.toLowerCase();
-		if (types.indexOf(lowercased) > -1) {
+		if (/\|/.test(type)) {
+			return 'multiple';
+		} else if (types.indexOf(lowercased) > -1) {
 			return lowercased;
 		} else {
 			return 'object';

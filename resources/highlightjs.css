@@ -14,8 +14,8 @@
 	border-color: #2fc231;
 }
 
-/* Orange Regexps */
-.df-type-regexp,
+/* Orange Regexps, multiple type */
+.df-type-multiple,
 .hljs-variable,
 .hljs-attribute,
 .hljs-tag,
@@ -31,7 +31,7 @@
 	color: #f69f1f;
 }
 
-.df-typeborder-regexp {
+.df-typeborder-multiple {
 	border-color: #f69f1f;
 }
 
