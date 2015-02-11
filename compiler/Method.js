@@ -50,6 +50,7 @@ module.exports.prototype = {
 						name: argument.name,
 						nameTypeClass: 'df-type-' + toTypeName(text(argument.type)),
 						description: text(argument.description),
+						'multiline-class': /<br>/.test(argument.description) ? 'multiline' : '',
 						default: argument.default
 					}
 			});
