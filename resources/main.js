@@ -145,7 +145,7 @@ Member.prototype = {
 					if (willScrollBy) {
 						precedingNodes.forEach(function(nodeToPush) {
 							nodeToPush.style.transitionProperty = "transform";
-							nodeToPush.style.transitionProperty = "-webkit-transform";
+							nodeToPush.style.transitionProperty = "transform, -webkit-transform";
 							nodeToPush.style.transform = 
 							nodeToPush.style.webkitTransform = "";
 						});
@@ -154,7 +154,7 @@ Member.prototype = {
 					if (offset + willScrollBy) {
 						followingNodes.forEach(function(nodeToPush) {
 							nodeToPush.style.transitionProperty = "transform";
-							nodeToPush.style.transitionProperty = "-webkit-transform";
+							nodeToPush.style.transitionProperty = "transform, -webkit-transform";
 							nodeToPush.style.transform = 
 							nodeToPush.style.webkitTransform = "";
 						});
