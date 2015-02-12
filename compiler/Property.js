@@ -5,6 +5,7 @@ module.exports = function Property(classNode) {
 	this.type = null;
 	this.shortDescription = null;
 	this.discussion = null;
+	this.defaultValue = null;
 	this.sample = null;
 	
 	// Init
@@ -13,6 +14,7 @@ module.exports = function Property(classNode) {
 	this.type = Utils.childNamedText(classNode, 'type');
 	this.shortDescription = Utils.childNamedText(classNode, 'short-description');
 	this.discussion = Utils.childNamedText(classNode, 'discussion');
+	this.defaultValue = Utils.childNamedText(classNode, 'default-value');
 	this.sample = Utils.childNamedText(classNode, 'sample');
 };
 
@@ -31,6 +33,7 @@ module.exports.prototype = {
 			'short-description': text(this.shortDescription),
 			'typeborder-class': 'df-typeborder-' + toTypeName(this.type),
 			discussion: text(this.discussion),
+			'default-value': this.defaultValue,
 			sample: code(this.sample)
 		});
 	}

@@ -7,6 +7,9 @@
 		{{#if discussion}}
 			<div class="discussion class-property-discussion">{{{discussion}}}</div>
 		{{/if}}
+		{{#if default-value}}
+			<span class="default-value">Defaults to <code>{{{default-value}}}</code>.</span>
+		{{/if}}
 		{{#if sample}}
 			<pre class="sample class-property-sample hljs"><code>{{{sample}}}</code></pre>
 		{{/if}}

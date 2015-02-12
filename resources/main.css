@@ -214,7 +214,7 @@ h3 + .class-member {
 	display: block;
 }
 
-.class-method-argument-default {
+.class-member .default-value {
 	font-size: .9em;
 	color: #a6a6a6;
 }
