@@ -8,6 +8,7 @@ var Builder = require('./builder.js');
 Builder.emptyBuildFolder();
 
 Builder.setTitleBase('Candybox Reference');
+Builder.setGlobalPrefix('cx.');
 
 Builder.copyResources();
 

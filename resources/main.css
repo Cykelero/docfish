@@ -176,6 +176,10 @@ h3 + .class-member {
 	cursor: pointer;
 }
 
+.class-member h4 .global-prefix {
+	font-weight: bold;
+}
+
 .class-member.folded {
 	padding-bottom: 6px;
 }

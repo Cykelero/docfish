@@ -1,4 +1,5 @@
 var Utils = require('./utilities.js');
+var Builder;
 
 module.exports = function Method(classNode) {
 	this.name = null;
@@ -44,6 +45,8 @@ module.exports.prototype = {
 			toTypeName = Utils.toTypeName.bind(Utils),
 			functionSignature = Utils.functionSignature.bind(Utils);
 		
+		if (!Builder) Builder = require('./builder.js');
+		
 		var typeborderClass = 'df-typeborder-' + (this.returns ? toTypeName(this.returns) : 'undefined'),
 			args = this.arguments.map(function(argument) {
 					return {
@@ -55,8 +58,19 @@ module.exports.prototype = {
 					}
 			});
 		
+		var formattedName;
+		if (this.name.indexOf(Builder.globalPrefix) === 0) {
+			formattedName = '<strong class="global-prefix">'
+				+ Builder.globalPrefix
+				+ '</strong>'
+				+ this.name.slice(Builder.globalPrefix.length);
+		} else {
+			formattedName = this.name;
+		}
+		
 		return this.template({
 			name: this.name,
+			formattedName: formattedName,
 			returns: colorTypes(text(this.returns), true),
 			'short-description': text(this.shortDescription),
 			

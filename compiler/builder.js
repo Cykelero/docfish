@@ -24,6 +24,7 @@ module.exports = {
 	
 	// Variables
 	titleBase: null,
+	globalPrefix: null,
 	
 	// Build init
 	emptyBuildFolder: function() {
@@ -92,6 +93,10 @@ module.exports = {
 	// Other
 	setTitleBase: function(titleBase) {
 		this.titleBase = titleBase;
+	},
+	
+	setGlobalPrefix: function(globalPrefix) {
+		this.globalPrefix = globalPrefix;
 	},
 	
 	makeTitle: function(pageName) {
