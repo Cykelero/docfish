@@ -70,6 +70,12 @@ module.exports = {
 			return '<a href="' + linkTarget + '">' + linkText + '</a>';
 		});
 		
+		text = text.replace(/<df-class>(.*?)<\/df-class>/g, function(tag, className) {
+			var linkText = className,
+				linkTarget = className.replace(/(#.*)?$/, '.html$1');
+			return '<a href="' + linkTarget + '"><code>' + linkText + '</code></a>';
+		});
+		
 		// // Arguments
 		text = text.replace(/<df-arg>/g, '<span class="class-method-argument">');
 		text = text.replace(/<\/df-arg>/g, '</span>');
