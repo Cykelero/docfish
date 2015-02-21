@@ -29,8 +29,8 @@ module.exports = {
 	// Build init
 	emptyBuildFolder: function() {
 		rimraf.sync(this.buildPath);
-		fs.mkdir(this.buildPath);
-		fs.mkdir(this.resourcesDestinationPath);
+		fs.mkdirSync(this.buildPath);
+		fs.mkdirSync(this.resourcesDestinationPath);
 	},
 	
 	copyResources: function() {
