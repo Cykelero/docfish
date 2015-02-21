@@ -93,6 +93,7 @@ module.exports = {
 	// Other
 	setTitleBase: function(titleBase) {
 		this.titleBase = titleBase;
+		process.title = 'docfish (' + titleBase + ')';
 	},
 	
 	setGlobalPrefix: function(globalPrefix) {
