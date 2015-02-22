@@ -138,6 +138,7 @@ table td:not(:first-child) {
 
 pre {
 	margin: 0;
+	tab-size: 4;
 }
 
 .sample {
