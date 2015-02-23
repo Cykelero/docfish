@@ -6,13 +6,13 @@
 		{{#if discussion}}
 			<div class="discussion class-method-discussion">{{{discussion}}}</div>
 		{{/if}}
-		{{#if arguments.length}}
-			<table class="class-event-arguments">
+		{{#if callbackArgumentValues.length}}
+			<table class="class-event-callback-arguments-values">
 				<tbody>
-					{{#each arguments}}
+					{{#each callbackArgumentValues}}
 						<tr>
 							<td class="{{{nameTypeClass}}}">
-								<span class="class-event-argument">{{{name}}}</span>
+								<span class="class-event-callback-argument-value">{{{name}}}</span>
 							</td>
 							<td>
 								{{{description}}}

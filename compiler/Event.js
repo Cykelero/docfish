@@ -3,7 +3,7 @@ var Utils = require('./utilities.js');
 module.exports = function Event(classNode) {
 	this.name = null;
 	
-	this.arguments = [];
+	this.callbackArgumentValues = null;
 	
 	this.shortDescription = null;
 	this.discussion = null;
@@ -13,13 +13,17 @@ module.exports = function Event(classNode) {
 	var self = this;
 	this.name = classNode.getAttribute('name');
 	
-	Utils.forEachChildWithTagName(classNode, 'argument', function(argumentNode) {
-		self.arguments.push({
-			name: argumentNode.getAttribute('name'),
-			type: argumentNode.getAttribute('type'),
-			description: argumentNode.textContent
+	var callbackArgumentNode = Utils.childNamed(classNode, 'callback-argument');
+	if (callbackArgumentNode) {
+		this.callbackArgumentValues = [];
+		Utils.forEachChildWithTagName(callbackArgumentNode, 'value', function(valueNode) {
+			self.callbackArgumentValues.push({
+				name: valueNode.getAttribute('name'),
+				type: valueNode.getAttribute('type'),
+				description: valueNode.textContent
+			});
 		});
-	});
+	}
 	
 	this.shortDescription = Utils.childNamedText(classNode, 'short-description');
 	this.discussion = Utils.childNamedText(classNode, 'discussion'),
@@ -34,19 +38,20 @@ module.exports.prototype = {
 			toTypeName = Utils.toTypeName.bind(Utils),
 			code = Utils.code.bind(Utils, parentClass);
 		
-		var args = this.arguments.map(function(argument) {
-					return {
-						name: argument.name,
-						nameTypeClass: 'df-type-' + toTypeName(text(argument.type)),
-						description: text(argument.description)
-					}
-			});
+		var callbackArgumentValues = this.callbackArgumentValues &&
+				this.callbackArgumentValues.map(function(value) {
+						return {
+							name: value.name,
+							nameTypeClass: 'df-type-' + toTypeName(text(value.type)),
+							description: text(value.description)
+						}
+				});
 		
 		return this.template({
 			name: this.name,
 			'short-description': text(this.shortDescription),
 			
-			arguments: args,
+			callbackArgumentValues: callbackArgumentValues,
 			
 			discussion: text(this.discussion),
 			
