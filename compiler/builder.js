@@ -45,6 +45,33 @@ module.exports = {
 		var xmlContents = Utils.read(this.classSourcePath + className + this.classSourceExtension);
 			xmlDocument = new xmldom.DOMParser().parseFromString(xmlContents);
 		
+		// Substitute symbols
+		var symbolsNode = Utils.childNamed(xmlDocument.documentElement, 'symbols');
+		if (symbolsNode) {
+			var instanceNodes = Array.prototype.slice.call(xmlDocument.documentElement.getElementsByTagName('symbol-instance'), 0);
+			
+			Utils.forEachChild(symbolsNode, function(symbolNode) {
+				// Extract symbol info
+				var symbolId = symbolNode.getAttribute('id'),
+					symbolContent;
+				
+				Utils.forEachChild(symbolNode, function(childNode) {
+					if (!symbolContent) symbolContent = childNode;
+				});
+				
+				// Substitute symbol instances
+				instanceNodes.forEach(function(instanceNode) {
+					if (instanceNode.getAttribute('id') == symbolId) {
+						instanceNode.parentNode.insertBefore(symbolContent.cloneNode(true), instanceNode);
+						instanceNode.parentNode.removeChild(instanceNode);
+					}
+				});
+			});
+			
+			symbolsNode.parentNode.removeChild((symbolsNode));
+		}
+		
+		// Instantiate class
 		classes[className] = new Klass(xmlDocument.documentElement);
 	},
 	
