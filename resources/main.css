@@ -217,6 +217,11 @@ h3 + .class-member {
 	color: #a6a6a6;
 }
 
+.class-event-callbacks-caption:before {
+	content: " ";
+	display: block;
+}
+
 /* Shared */
 
 code, table td:first-child, .class-method-argument {
