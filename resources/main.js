@@ -320,17 +320,18 @@ document.addEventListener("DOMContentLoaded", function() {
 	var aNodes = document.getElementsByTagName("a");
 	for (var a = 0; a < aNodes.length; a++) {
 		var aNode = aNodes[a],
-			nodeTargetComponents = (aNode.getAttribute("href") || "").match(/([^#]*)(#.*)?$/);
+			targetComponents = (aNode.getAttribute("href") || "").match(/([^#]*)(#.*)?$/),
+			targetDocument = targetComponents[1];
 		
-		if (documentName == nodeTargetComponents[1]) {
-			var nodeTargetId = nodeTargetComponents[2].slice(1);
-			if (nodeTargetId.length) {
-				aNode.addEventListener("click", function(event) {
+		if (documentName == targetDocument || targetDocument == "") {
+			var targetId = targetComponents[2].slice(1);
+			if (targetId.length) {
+				aNode.addEventListener("click", function(targetId, event) {
 					event.preventDefault();
 					
-					var member = getMemberById(nodeTargetId);
+					var member = getMemberById(targetId);
 					if (member) member.setFolded(false, true);
-				});
+				}.bind(null, targetId));
 			}
 		}
 	}
