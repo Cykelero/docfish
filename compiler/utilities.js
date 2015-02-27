@@ -66,7 +66,7 @@ module.exports = {
 		// Docfish tags
 		// // Documentation links
 		text = text.replace(/<df-link target="([^"]*)">(.*?)<\/df-link>/g, function(tag, linkTarget, linkText) {
-			linkTarget = linkTarget.replace(/(#.*)?$/, '.html$1');
+			linkTarget = linkTarget.replace(/^[^#]+/, '$&.html');
 			return '<a href="' + linkTarget + '">' + linkText + '</a>';
 		});
 		
