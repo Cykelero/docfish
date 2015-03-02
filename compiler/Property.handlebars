@@ -10,6 +10,9 @@
 		{{#if default-value}}
 			<span class="default-value">Defaults to <code>{{{default-value}}}</code>.</span>
 		{{/if}}
+		{{#if is-read-only}}
+			<span class="is-read-only">Read-only.</span>
+		{{/if}}
 		{{#if sample}}
 			<pre class="sample class-property-sample hljs"><code>{{{sample}}}</code></pre>
 		{{/if}}
