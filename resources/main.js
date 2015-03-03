@@ -31,11 +31,11 @@ Member.prototype = {
 	boundEndTrackingFunction: null,
 	
 	
-	toggleFolded: function(scrollToReveal) {
-		this.setFolded(!this.folded, scrollToReveal);
+	toggleFolded: function(scrollToReveal, thenUpdateHash) {
+		this.setFolded(!this.folded, scrollToReveal, thenUpdateHash);
 	},
 	
-	setFolded: function(fold, scrollToReveal) {
+	setFolded: function(fold, scrollToReveal, thenUpdateHash) {
 		var self = this;
 		
 		requestAnimationFrame(function() {
@@ -178,9 +178,11 @@ Member.prototype = {
 			}
 		}.bind(this));
 		
-		setTimeout(function() {
-			updateHash();
-		}, 100);
+		if (thenUpdateHash) {
+			setTimeout(function() {
+				updateHash();
+			}, 100);
+		}
 	},
 	
 	onTitleClick: function(event) {
@@ -195,7 +197,7 @@ Member.prototype = {
 			document.selection.empty();
 		}
 		
-		this.toggleFolded(true);
+		this.toggleFolded(true, true);
 	},
 	
 	startTitleClickTracking: function(event) {
@@ -296,7 +298,6 @@ function updateHash() {
 			history.pushState(null, null, currentURLWithoutHash + "#" + newHash);
 		}
 	} else {
-		newHash = "";
 		if (/#/.test(location.href)) {
 			history.pushState(null, null, currentURLWithoutHash);
 		}
@@ -330,7 +331,7 @@ document.addEventListener("DOMContentLoaded", function() {
 					event.preventDefault();
 					
 					var member = getMemberById(targetId);
-					if (member) member.setFolded(false, true);
+					if (member) member.setFolded(false, true, true);
 				}.bind(null, targetId));
 			}
 		}
@@ -340,7 +341,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	var hash = location.hash.slice(1);
 	setTimeout(function() {
 		var focusedMember = getMemberById(hash);
-		if (focusedMember) focusedMember.setFolded(false, true);
+		if (focusedMember) focusedMember.setFolded(false, true, false);
 	}, 100);
 });
 
@@ -348,5 +349,5 @@ window.addEventListener("hashchange", function() {
 	var hash = location.hash.slice(1),
 		focusedMember = getMemberById(hash);
 	
-	if (focusedMember) focusedMember.setFolded(false, true);
+	if (focusedMember) focusedMember.setFolded(false, true, false);
 });
