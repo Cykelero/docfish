@@ -55,3 +55,9 @@ h3 + .class-member {
 	padding-top: 1px;
 	padding-bottom: 1px;
 }
+
+.class-member h4 {
+	padding-left: 38px;
+
+	text-indent: -38px;
+}

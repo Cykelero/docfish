@@ -169,8 +169,11 @@ h3 + .class-member {
 }
 
 .class-member h4 {
+	padding-left: 40px;
+	
 	margin: 0 0 10px;
 
+	text-indent: -40px;
 	font-size: inherit;
 	font-weight: normal;
 	
@@ -195,6 +198,12 @@ h3 + .class-member {
 
 .class-method-signature-argument-block {
 	white-space: nowrap;
+}
+
+.class-method-signature-argument-block:first-of-type {
+	display: inline-block;
+	
+	text-indent: 0;
 }
 
 .class-member-content {

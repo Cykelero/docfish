@@ -106,12 +106,13 @@ module.exports = {
 	functionSignature: function(text) {
 		var self = this;
 		
-		return text.replace(/(([A-Z]\w*\|?)+) (\w+)( = [^ \],])?/g, function(argument, argumentType, lastArgumentType, argumentName, defaultValue) {
+		return text.replace(/(([A-Z]\w*\|?)+) (\w+)( = [^ \],]+)?\s*(,?)/g, function(argument, argumentType, lastArgumentType, argumentName, defaultValue, comma) {
 			defaultValue = defaultValue || '';
 			return '<span class="class-method-signature-argument-block">'
 				+ self.colorTypes(argumentType)
 				+ ' <span class="class-method-argument">' + argumentName + '</span>'
 				+ defaultValue
+				+ comma
 				+ '</span>';
 		});
 	},
