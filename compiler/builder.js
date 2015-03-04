@@ -101,6 +101,7 @@ module.exports = {
 			'indent-spaces': 4,
 			'tab-size': 4,
 			'tidy-mark': false,
+			'wrap': 0,
 			//'preserve-entities': true
 		}, function(error, html) {
 			html = html.replace(/( {4})/g, '\t');
