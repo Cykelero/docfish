@@ -154,6 +154,11 @@ pre {
 	overflow-x: auto;
 }
 
+dt:after {
+	content: ":";
+	margin-left: -5px;
+}
+
 /* Specific */
 
 .class-member {
