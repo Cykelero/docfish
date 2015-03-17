@@ -1,8 +1,12 @@
 var Utils = require('./utilities.js');
 
-module.exports = function Property(classNode) {
+module.exports = function Property(buildSession, classNode) {
 	this.name = null;
 	this.type = null;
+	
+	this.buildSession = buildSession;
+	this.template = this.buildSession.getTemplate('Property');
+	
 	this.shortDescription = null;
 	this.discussion = null;
 	this.defaultValue = null;
@@ -21,23 +25,18 @@ module.exports = function Property(classNode) {
 };
 
 module.exports.prototype = {
-	template: Utils.getTemplate('Property'),
-	
-	getHTML: function(classes, parentClass) {
-		var text = Utils.text.bind(Utils, parentClass),
-			code = Utils.code.bind(Utils, parentClass),
-			colorTypes = Utils.colorTypes.bind(Utils),
-			toTypeName = Utils.toTypeName.bind(Utils);
+	getHTML: function(hostClass) {
+		var tools = this.buildSession.textToolsFor(hostClass);
 		
 		return this.template({
 			name: this.name,
-			type: colorTypes(text(this.type, true)),
-			'short-description': text(this.shortDescription),
-			'typeborder-class': 'df-typeborder-' + toTypeName(this.type),
-			discussion: text(this.discussion),
+			type: tools.type(tools.text(this.type)),
+			'short-description': tools.text(this.shortDescription),
+			'typeborder-class': 'df-kindborder-' + this.buildSession.typeToKind(this.type),
+			discussion: tools.text(this.discussion),
 			'default-value': this.defaultValue,
 			'is-read-only': this.isReadOnly,
-			sample: code(this.sample)
+			sample: tools.code(this.sample)
 		});
 	}
 };

@@ -3,10 +3,13 @@ var Utils = require('./utilities.js');
 var MemberGroup = require('./MemberGroup.js');
 var Export = require('./Export.js');
 
-module.exports = function Klass(classNode) {
+module.exports = function Klass(buildSession, classNode) {
 	this.id = null;
 	this.name = null;
 	this.public = false;
+	
+	this.buildSession = buildSession;
+	this.template = this.buildSession.getTemplate('Klass');
 	
 	this.discussion = null;
 	this.related = null;
@@ -19,12 +22,12 @@ module.exports = function Klass(classNode) {
 	var self = this;
 	
 	// // Metadata
+	this.id = classNode.getAttribute('id');
 	if (classNode.getAttribute('public') === 'true') {
 		this.public = true;
 	}
 	
 	var metadata = Utils.childNamed(classNode, 'metadata');
-	this.id = Utils.childNamedText(metadata, 'id');
 	this.name = Utils.childNamedText(metadata, 'name');
 	this.discussion = Utils.childNamedText(metadata, 'discussion');
 	this.related = Utils.childNamedText(metadata, 'related');
@@ -43,7 +46,7 @@ module.exports = function Klass(classNode) {
 	var exports = Utils.childNamed(classNode, 'exports');
 	if (exports) {
 		Utils.forEachChild(exports, function(groupNode) {
-			var exportObject = new Export(groupNode);
+			var exportObject = new Export(self.buildSession, groupNode);
 			self.exports[exportObject.id] = exportObject;
 		});
 	}
@@ -51,24 +54,22 @@ module.exports = function Klass(classNode) {
 	var members = Utils.childNamed(classNode, 'members');
 	if (members) {
 		Utils.forEachChild(members, function(groupNode) {
-			self.memberGroups.push(new MemberGroup(groupNode));
+			self.memberGroups.push(new MemberGroup(self.buildSession, groupNode));
 		});
 	}
 };
 
 module.exports.prototype = {
-	template: Utils.getTemplate('Klass'),
-	
-	getHTML: function(classes) {
+	getHTML: function() {
 		var self = this,
-			text = Utils.text.bind(Utils, this);
+			tools = this.buildSession.textToolsFor(this);
 		
 		return this.template({
 			name: this.name,
-			discussion: text(this.discussion),
-			related: text(this.related),
+			discussion: tools.text(this.discussion),
+			related: tools.text(this.related),
 			memberGroups: this.memberGroups.map(function(member) {
-				return member.getHTML(classes, self);
+				return member.getHTML(self);
 			})
 		});
 	},

@@ -1,6 +1,5 @@
 var fs = require('fs');
-var Handlebars = require('handlebars');
-var Highlight = require('highlight.js').highlight;
+var rimraf = require('rimraf');
 
 module.exports = {
 	// XML
@@ -40,94 +39,25 @@ module.exports = {
 	},
 	
 	// Files
-	read: function(filename) {
+	readFile: function(filename) {
 		return fs.readFileSync(filename, {encoding: 'utf-8'})
 	},
 	
-	write: fs.writeFileSync,
+	writeFile: fs.writeFileSync,
 	
-	getTemplate: function(filename) {
-		return Handlebars.compile(this.read(filename + '.handlebars'));
+	emptyFolder: function(path) {
+		rimraf.sync(path);
 	},
 	
-	// Text
-	text: function(klass, text) {
-		if (text === undefined || text === null) return text;
-		
-		text = text.trim();
-		
-		// Placeholders
-		klass.placeholderValues.concat([
-			{name: '$classname', value: klass.name}
-		]).forEach(function(placeholder) {
-			text = text.split('{df:' + placeholder.name + '}').join(placeholder.value);
-		});
-		
-		// Docfish tags
-		// // Documentation links
-		text = text.replace(/<df-link target="([^"]*)">(.*?)<\/df-link>/g, function(tag, linkTarget, linkText) {
-			linkTarget = linkTarget.replace(/^[^#]+/, '$&.html');
-			return '<a href="' + linkTarget + '">' + linkText + '</a>';
-		});
-		
-		text = text.replace(/<df-class>(.*?)<\/df-class>/g, function(tag, className) {
-			var linkText = className,
-				linkTarget = className.replace(/(#.*)?$/, '.html$1');
-			return '<a href="' + linkTarget + '"><code>' + linkText + '</code></a>';
-		});
-		
-		// // Arguments
-		text = text.replace(/<df-arg>/g, '<span class="class-method-argument">');
-		text = text.replace(/<\/df-arg>/g, '</span>');
-		
-		return text;
+	createFolder: function(path) {
+		fs.mkdirSync(path);
 	},
 	
-	code: function(klass, text) {
-		if (text === undefined || text === null) return text;
-		
-		return Highlight('javascript', this.text(klass, text)).value;
+	getFolderContents: function(path) {
+		return fs.readdirSync(path);
 	},
 	
-	colorTypes: function(text, assumeObject) {
-		var self = this;
-		
-		return text.replace(/\b\w+\b/g, function(word) {
-			var isCapitalized = /[A-Z]/.test(word[0]);
-			
-			if (isCapitalized || assumeObject) {
-				return '<span class="df-type-' + self.toTypeName(word) + '">' + word + '</span>';
-			} else {
-				return word;
-			}
-		});
-	},
-	
-	functionSignature: function(text) {
-		var self = this;
-		
-		return text.replace(/(([A-Z]\w*\|?)+) (\w+)( = ("[^"]*"|[^ \],]+))?\s*(,?)/g, function(argument, argumentType, lastArgumentType, argumentName, defaultValue, rawDefaultValue, comma) {
-			defaultValue = defaultValue || '';
-			return '<span class="class-method-signature-argument-block">'
-				+ self.colorTypes(argumentType)
-				+ ' <span class="class-method-argument">' + argumentName + '</span>'
-				+ defaultValue
-				+ comma
-				+ '</span>';
-		});
-	},
-	
-	// Other
-	toTypeName: function(type) {
-		var types = ['string', 'number', 'boolean', 'function', 'undefined', 'null'];
-		
-		var lowercased = type.toLowerCase();
-		if (/\|/.test(type)) {
-			return 'multiple';
-		} else if (types.indexOf(lowercased) > -1) {
-			return lowercased;
-		} else {
-			return 'object';
-		}
+	isFolder: function(path) {
+		return fs.lstatSync(path).isDirectory();
 	}
 };

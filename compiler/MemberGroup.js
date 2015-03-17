@@ -5,8 +5,11 @@ var Property = require('./Property.js');
 var Event = require('./Event.js');
 var Import = require('./Import.js');
 
-module.exports = function MemberGroup(classNode) {
+module.exports = function MemberGroup(buildSession, classNode) {
 	this.name = null;
+	
+	this.buildSession = buildSession;
+	this.template = this.buildSession.getTemplate('MemberGroup');
 	
 	this.members = [];
 	
@@ -25,18 +28,16 @@ module.exports = function MemberGroup(classNode) {
 			case 'import': memberClass = Import; break;
 		}
 		
-		self.members.push(new memberClass(memberNode));
+		self.members.push(new memberClass(self.buildSession, memberNode));
 	});
 };
 
 module.exports.prototype = {
-	template: Utils.getTemplate('MemberGroup'),
-	
-	getHTML: function(classes, parentClass) {
+	getHTML: function(hostClass) {
 		return this.template({
 			name: this.name,
 			members: this.members.map(function(member) {
-				return member.getHTML(classes, parentClass);
+				return member.getHTML(hostClass);
 			})
 		});
 	}

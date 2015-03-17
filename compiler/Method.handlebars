@@ -7,7 +7,7 @@
 			<code class="class-method-signature">{{{../formattedName}}}({{{this}}})</code>
 		{{/each}}
 	</h4>
-	<div class="class-member-content {{{typeborder-class}}}">
+	<div class="class-member-content {{{kindborder-class}}}">
 		{{#if discussion}}
 			<div class="discussion class-method-discussion">{{{discussion}}}</div>
 		{{/if}}
@@ -16,15 +16,15 @@
 				<tbody>
 					{{#each arguments}}
 						<tr>
-							<td class="{{{nameTypeClass}}}">
+							<td class="{{{kindClass}}}">
 								<span class="class-method-argument">{{{name}}}</span>
 							</td>
 							<td>
 								<div class="class-method-argument-description {{{multiline-class}}}">
 									{{{description}}}
 								</div>
-								{{#if default}}
-									<span class="default-value">Defaults to <code>{{{default}}}</code>.</span>
+								{{#if default-value}}
+									<span class="default-value">Defaults to <code>{{{default-value}}}</code>.</span>
 								{{/if}}
 							</td>
 						</tr>

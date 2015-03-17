@@ -2,23 +2,28 @@
 
 // Requires
 var Utils = require('./utilities.js');
-var Builder = require('./builder.js');
+var BuildSession = require('./BuildSession.js');
 var Watch = require('node-watch');
 
 // Init
-Builder.setTitleBase('Candybox Reference');
-Builder.setGlobalPrefix('cx.');
+var buildOptions = {
+	name: 'Candybox Reference',
+	sourcePath: '../source/',
+	buildPath: '../build/',
+	
+	globalPrefix: 'cx.'
+};
 
 function build() {
 	process.stdout.write('Building…');
-	Builder.emptyBuildFolder();
 	
-	Builder.copyResources();
-	Builder.loadClasses();
-	Builder.buildClassPages();
+	var session = new BuildSession(buildOptions);
+	
+	session.build();
+	
 	process.stdout.write(' done!\n');
 }
 
-Watch([Builder.classSourcePath, Builder.resourcesSourcePath], build);
+Watch([buildOptions.sourcePath], build);
 
 build();

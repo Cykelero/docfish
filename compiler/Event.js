@@ -1,7 +1,10 @@
 var Utils = require('./utilities.js');
 
-module.exports = function Event(classNode) {
+module.exports = function Event(buildSession, classNode) {
 	this.name = null;
+	
+	this.buildSession = buildSession;
+	this.template = this.buildSession.getTemplate('Event');
 	
 	this.callbackArgumentValues = null;
 	
@@ -31,31 +34,28 @@ module.exports = function Event(classNode) {
 };
 
 module.exports.prototype = {
-	template: Utils.getTemplate('Event'),
-	
-	getHTML: function(classes, parentClass) {
-		var text = Utils.text.bind(Utils, parentClass),
-			toTypeName = Utils.toTypeName.bind(Utils),
-			code = Utils.code.bind(Utils, parentClass);
+	getHTML: function(hostClass) {
+		var self = this,
+			tools = this.buildSession.textToolsFor(hostClass);
 		
 		var callbackArgumentValues = this.callbackArgumentValues &&
 				this.callbackArgumentValues.map(function(value) {
 						return {
 							name: value.name,
-							nameTypeClass: 'df-type-' + toTypeName(text(value.type)),
-							description: text(value.description)
+							nameTypeClass: 'df-kind-' + self.buildSession.typeToKind(tools.text(value.type)),
+							description: tools.text(value.description)
 						}
 				});
 		
 		return this.template({
 			name: this.name,
-			'short-description': text(this.shortDescription),
+			'short-description': tools.text(this.shortDescription),
 			
 			callbackArgumentValues: callbackArgumentValues,
 			
-			discussion: text(this.discussion),
+			discussion: tools.text(this.discussion),
 			
-			sample: code(this.sample)
+			sample: tools.code(this.sample)
 		});
 	}
 };

@@ -1,8 +1,10 @@
 var Utils = require('./utilities.js');
 
-module.exports = function Import(classNode) {
+module.exports = function Import(buildSession, classNode) {
 	this.from = null;
 	this.id = null;
+	
+	this.buildSession = buildSession;
 	
 	// Init
 	var self = this;
@@ -11,7 +13,7 @@ module.exports = function Import(classNode) {
 };
 
 module.exports.prototype = {
-	getHTML: function(classes, parentClass) {
-		return classes[this.from].getExport(this.id).getHTML(classes, parentClass);
+	getHTML: function(hostClass) {
+		return this.buildSession.getUnitById(this.from).getExport(this.id).getHTML(hostClass);
 	}
 };

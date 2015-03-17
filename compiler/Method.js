@@ -1,8 +1,10 @@
 var Utils = require('./utilities.js');
-var Builder;
 
-module.exports = function Method(classNode) {
+module.exports = function Method(buildSession, classNode) {
 	this.name = null;
+	
+	this.buildSession = buildSession;
+	this.template = this.buildSession.getTemplate('Method');
 	
 	this.signatures = [];
 	this.arguments = [];
@@ -24,7 +26,7 @@ module.exports = function Method(classNode) {
 		self.arguments.push({
 			name: argumentNode.getAttribute('name'),
 			type: argumentNode.getAttribute('type'),
-			default: argumentNode.getAttribute('default'),
+			defaultValue: argumentNode.getAttribute('default'),
 			description: argumentNode.textContent
 		});
 	});
@@ -36,34 +38,31 @@ module.exports = function Method(classNode) {
 };
 
 module.exports.prototype = {
-	template: Utils.getTemplate('Method'),
-	
-	getHTML: function(classes, parentClass) {
-		var text = Utils.text.bind(Utils, parentClass),
-			code = Utils.code.bind(Utils, parentClass),
-			colorTypes = Utils.colorTypes.bind(Utils),
-			toTypeName = Utils.toTypeName.bind(Utils),
-			functionSignature = Utils.functionSignature.bind(Utils);
+	getHTML: function(hostClass) {
+		var self = this,
+			tools = this.buildSession.textToolsFor(hostClass),
+			globalPrefix = this.buildSession.getGlobalPrefix();
 		
-		if (!Builder) Builder = require('./builder.js');
+		var kindborderClass,
+			args,
+			formattedName;
 		
-		var typeborderClass = 'df-typeborder-' + (this.returns ? toTypeName(this.returns) : 'undefined'),
-			args = this.arguments.map(function(argument) {
-					return {
-						name: argument.name,
-						nameTypeClass: 'df-type-' + toTypeName(text(argument.type)),
-						description: text(argument.description),
-						'multiline-class': /<br>/.test(argument.description) ? 'multiline' : '',
-						default: argument.default
-					}
-			});
+		kindborderClass = 'df-kindborder-' + (this.returns ? this.buildSession.typeToKind(this.returns) : 'undefined');
+		args = this.arguments.map(function(argument) {
+			return {
+				name: argument.name,
+				kindClass: 'df-kind-' + self.buildSession.typeToKind(tools.text(argument.type)),
+				description: tools.text(argument.description),
+				'multiline-class': /<br>/.test(argument.description) ? 'multiline' : '',
+				'default-value': argument.defaultValue
+			};
+		});
 		
-		var formattedName;
-		if (this.name.indexOf(Builder.globalPrefix) === 0) {
+		if (this.name.indexOf(globalPrefix) === 0) {
 			formattedName = '<strong class="global-prefix">'
-				+ Builder.globalPrefix
+				+ globalPrefix
 				+ '</strong>'
-				+ this.name.slice(Builder.globalPrefix.length);
+				+ this.name.slice(globalPrefix.length);
 		} else {
 			formattedName = this.name;
 		}
@@ -71,17 +70,17 @@ module.exports.prototype = {
 		return this.template({
 			name: this.name,
 			formattedName: formattedName,
-			returns: colorTypes(text(this.returns), true),
-			'short-description': text(this.shortDescription),
+			returns: tools.type(tools.text(this.returns)),
+			'short-description': tools.text(this.shortDescription),
 			
-			'typeborder-class': typeborderClass,
+			'kindborder-class': kindborderClass,
 			
-			signatures: this.signatures.map(text).map(functionSignature),
+			signatures: this.signatures.map(tools.functionSignature),
 			arguments: args,
 			
-			discussion: text(this.discussion),
+			discussion: tools.text(this.discussion),
 			
-			sample: code(this.sample)
+			sample: tools.code(this.sample)
 		});
 	}
 };
