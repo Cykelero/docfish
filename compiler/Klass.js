@@ -11,6 +11,7 @@ module.exports = function Klass(buildSession, classNode) {
 	this.buildSession = buildSession;
 	this.template = this.buildSession.getTemplate('Klass');
 	
+	this.shortDescription = null;
 	this.discussion = null;
 	this.related = null;
 	this.placeholderValues = [];
@@ -29,6 +30,7 @@ module.exports = function Klass(buildSession, classNode) {
 	
 	var metadata = Utils.childNamed(classNode, 'metadata');
 	this.name = Utils.childNamedText(metadata, 'name');
+	this.shortDescription = Utils.childNamedText(metadata, 'short-description');
 	this.discussion = Utils.childNamedText(metadata, 'discussion');
 	this.related = Utils.childNamedText(metadata, 'related');
 	
@@ -76,5 +78,14 @@ module.exports.prototype = {
 	
 	getExport: function(id) {
 		return this.exports[id];
+	},
+	
+	getMemberByName: function(name) {
+		for (var g = 0; g < this.memberGroups.length; g++) {
+			var memberResult = this.memberGroups[g].getMemberByName(name);
+			if (memberResult) return memberResult;
+		}
+		
+		return null;
 	}
 };

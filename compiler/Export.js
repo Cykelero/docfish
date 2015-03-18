@@ -39,5 +39,21 @@ module.exports.prototype = {
 				return member.getHTML(hostClass);
 			})
 		});
+	},
+	
+	getMemberByName: function(name) {
+		for (var m = 0; m < this.members.length; m++) {
+			var member = this.members[m];
+			
+			if (member.name === name
+				|| member instanceof Event && 'on-' + member.name === name) {
+				return member;
+			} else if (member.getMemberByName) {
+				var memberResult = member.getMemberByName(name);
+				if (memberResult) return memberResult;
+			}
+		}
+		
+		return null;
 	}
 };

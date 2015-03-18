@@ -49,7 +49,7 @@ module.exports.prototype = {
 		
 		return this.template({
 			name: this.name,
-			'short-description': tools.text(this.shortDescription),
+			'short-description': tools.attribute(this.shortDescription),
 			
 			callbackArgumentValues: callbackArgumentValues,
 			

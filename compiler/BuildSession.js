@@ -154,6 +154,22 @@ module.exports.prototype = {
 		return this.units[id];
 	},
 	
+	getObjectByPath: function(id, thisUnit) {
+		var idComponents = /^([^#]*)(#(.*))?$/.exec(id),
+			unitName = idComponents[1],
+			memberName = idComponents[3],
+			unit = unitName.length ? this.getUnitById(unitName) : thisUnit;
+		
+		if (!unit) return null;
+		
+		if (!memberName) {
+			return unit;
+		} else {
+			var member = unit.getMemberByName(memberName);
+			return member || null;
+		}
+	},
+	
 	// HTML generation
 	buildUnitPage: function(unit) {
 		var self = this;
@@ -209,6 +225,8 @@ module.exports.prototype = {
 	
 	textTools: {
 		text: function(text) {
+			var self = this;
+			
 			if (text === undefined || text === null) return text;
 			
 			// Trim
@@ -224,16 +242,23 @@ module.exports.prototype = {
 			});
 			
 			// Substitute docfish tags
+			function getShortDescriptionFor(target) {
+				var targetObject = self.buildSession.getObjectByPath(target, self.klass);
+				return self.tools.attribute(targetObject && targetObject.shortDescription);
+			};
+			
 			// // Documentation links
 			text = text.replace(/<df-link target="([^"]*)">(.*?)<\/df-link>/g, function(tag, linkTarget, linkText) {
-				linkTarget = linkTarget.replace(/^[^#]+/, '$&.html');
-				return '<a href="' + linkTarget + '">' + linkText + '</a>';
+				var linkHref = linkTarget.replace(/^[^#]+/, '$&.html'),
+					linkTitle = getShortDescriptionFor(linkTarget) || '';
+				return '<a href="' + linkHref + '" title="' + linkTitle + '">' + linkText + '</a>';
 			});
 			
 			text = text.replace(/<df-class>(.*?)<\/df-class>/g, function(tag, className) {
 				var linkText = className,
-					linkTarget = className + '.html';
-				return '<a href="' + linkTarget + '"><code>' + linkText + '</code></a>';
+					linkHref = className + '.html',
+					linkTitle = getShortDescriptionFor(className) || '';
+				return '<a href="' + linkHref + '" title="' + linkTitle + '"><code>' + linkText + '</code></a>';
 			});
 			
 			// // Arguments
@@ -247,6 +272,12 @@ module.exports.prototype = {
 			if (text === undefined || text === null) return text;
 			
 			return Highlight.highlight('javascript', this.tools.text(text)).value;
+		},
+		
+		attribute: function(text) {
+			if (text === undefined || text === null) return text;
+			
+			return this.tools.text(text).replace(/"/g, '\\"');
 		},
 		
 		type: function(text) {

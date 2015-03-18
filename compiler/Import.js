@@ -15,5 +15,9 @@ module.exports = function Import(buildSession, classNode) {
 module.exports.prototype = {
 	getHTML: function(hostClass) {
 		return this.buildSession.getUnitById(this.from).getExport(this.id).getHTML(hostClass);
+	},
+	
+	getMemberByName: function(name) {
+		return this.buildSession.getUnitById(this.from).getExport(this.id).getMemberByName(name);
 	}
 };

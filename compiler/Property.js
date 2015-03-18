@@ -30,8 +30,8 @@ module.exports.prototype = {
 		
 		return this.template({
 			name: this.name,
+			'short-description': tools.attribute(this.shortDescription),
 			type: tools.type(tools.text(this.type)),
-			'short-description': tools.text(this.shortDescription),
 			'typeborder-class': 'df-kindborder-' + this.buildSession.typeToKind(this.type),
 			discussion: tools.text(this.discussion),
 			'default-value': this.defaultValue,

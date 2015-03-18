@@ -69,9 +69,9 @@ module.exports.prototype = {
 		
 		return this.template({
 			name: this.name,
+			'short-description': tools.attribute(this.shortDescription),
 			formattedName: formattedName,
 			returns: tools.type(tools.text(this.returns)),
-			'short-description': tools.text(this.shortDescription),
 			
 			'kindborder-class': kindborderClass,
 			
