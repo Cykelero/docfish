@@ -325,7 +325,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			targetDocument = targetComponents[1];
 		
 		if (documentName == targetDocument || targetDocument == "") {
-			var targetId = targetComponents[2].slice(1);
+			var targetId = (targetComponents[2] || "").slice(1);
 			if (targetId.length) {
 				aNode.addEventListener("click", function(targetId, event) {
 					event.preventDefault();
