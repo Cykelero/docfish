@@ -107,7 +107,7 @@ module.exports.prototype = {
 		// Substitute symbols
 		var symbolsNode = Utils.childNamed(xmlRoot, 'symbols');
 		if (symbolsNode) {
-			var instanceNodes = Array.prototype.slice.call(xmlRoot.getElementsByTagName('symbol-instance'), 0);
+			var instanceMarkerNodes = Array.prototype.slice.call(xmlRoot.getElementsByTagName('symbol-instance'), 0);
 			
 			// Replace each instance
 			Utils.forEachChild(symbolsNode, function(symbolNode) {
@@ -120,10 +120,23 @@ module.exports.prototype = {
 				});
 				
 				// Substitute symbol instances
-				instanceNodes.forEach(function(instanceNode) {
-					if (instanceNode.getAttribute('id') === symbolId) {
-						instanceNode.parentNode.insertBefore(symbolContent.cloneNode(true), instanceNode);
-						instanceNode.parentNode.removeChild(instanceNode);
+				instanceMarkerNodes.forEach(function(instanceMarkerNode) {
+					if (instanceMarkerNode.getAttribute('id') === symbolId) {
+						// Copy symbol
+						var symbolInstance = symbolContent.cloneNode(true),
+							variableNodes = Array.prototype.slice.call(symbolInstance.getElementsByTagName('symbol-variable'), 0);
+						
+						variableNodes.forEach(function(variableNode) {
+							var variableValue = instanceMarkerNode.getAttribute('variable-' + variableNode.getAttribute('id')) || '',
+								variableValueNode = xmlDocument.createTextNode(variableValue);
+							
+							variableNode.parentNode.insertBefore(variableValueNode, variableNode);
+							variableNode.parentNode.removeChild(variableNode);
+						});
+						
+						// Insert symbol copy
+						instanceMarkerNode.parentNode.insertBefore(symbolInstance, instanceMarkerNode);
+						instanceMarkerNode.parentNode.removeChild(instanceMarkerNode);
 					}
 				});
 			});
