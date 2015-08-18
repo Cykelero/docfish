@@ -38,6 +38,7 @@ h1 {
 	margin-top: 0;
 	margin-bottom: 0;
 	
+	margin-left: -2px;
 	font-size: 50px;
 }
 
@@ -89,6 +90,7 @@ h2 {
 	margin-top: 27px;
 	margin-bottom: 14px;
 	
+	margin-left: -2px;
 	font-size: 32px;
 	font-weight: normal;
 }
@@ -101,6 +103,7 @@ h3 {
 	margin-top: 27px;
 	margin-bottom: 15px;
 	
+	margin-left: -2px;
 	font-size: 26px;
 	font-weight: normal;
 }
@@ -176,7 +179,7 @@ h3 + .class-member {
 .class-member h4 {
 	padding-left: 40px;
 	
-	margin: 0 0 10px;
+	margin: 0 0 10px -2px;
 
 	text-indent: -40px;
 	font-size: inherit;
@@ -212,7 +215,7 @@ h3 + .class-member {
 }
 
 .class-member-content {
-	margin-left: 6px;
+	margin-left: 4px;
 	
 	padding-left: 13px;
 	border-left: 2px solid #2b2b2b;
