@@ -20,7 +20,8 @@ module.exports = function Klass(buildSession, classNode) {
 	this.memberGroups = [];
 	
 	// Init
-	var self = this;
+	var self = this,
+		tools = this.buildSession.textToolsFor(this);
 	
 	// // Metadata
 	this.id = classNode.getAttribute('id');
@@ -39,7 +40,7 @@ module.exports = function Klass(buildSession, classNode) {
 		Utils.forEachChild(placeholderValues, function(placeholderNode) {
 			self.placeholderValues.push({
 				name: placeholderNode.getAttribute('name'),
-				value: placeholderNode.textContent
+				value: tools.text(placeholderNode.textContent)
 			});
 		});
 	}
