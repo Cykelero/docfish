@@ -254,6 +254,8 @@ module.exports.prototype = {
 				text = text.split('{df:' + placeholderPair.name + '}').join(placeholderPair.value);
 			});
 			
+			text = text.replace(/{df:[^}]*}/, '');
+			
 			// Substitute docfish tags
 			function getShortDescriptionFor(target) {
 				var targetObject = self.buildSession.getObjectByPath(target, self.klass);
