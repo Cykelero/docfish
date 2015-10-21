@@ -314,7 +314,7 @@ module.exports.prototype = {
 			
 			text = this.tools.text(text);
 			
-			return text.replace(/(([A-Z]\w*\|?)+) (\w+)( = ("[^"]*"|[^ \],]+))?\s*(,?)/g, function(_argumentBlock, argumentType, _lastArgumentType, argumentName, defaultValueBlock, _defaultValue, comma) {
+			return text.replace(/((([A-Z]\w*|\[[A-Z]\w*\])\|?)+) (\w+)( = ("[^"]*"|[^ \],]+))?\s*(,?)/g, function(_argumentBlock, argumentType, _lastArgumentSubTypeBlock, _lastArgumentSubType, argumentName, defaultValueBlock, _defaultValue, comma) {
 				defaultValueBlock = defaultValueBlock || '';
 				return '<span class="class-method-signature-argument-block">'
 					+ self.tools.type(argumentType)
