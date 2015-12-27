@@ -1,4 +1,5 @@
 var Utils = require('./utilities.js');
+var Feedback = require('./feedback.js');
 var xmldom = require('xmldom');
 var Handlebars = require('handlebars');
 var Highlight = require('highlight.js');
@@ -265,10 +266,22 @@ module.exports.prototype = {
 				return self.tools.attribute(targetObject && targetObject.shortDescription);
 			};
 			
+			function checkLink(target) {
+				var targetObject = self.getObjectByPath(target),
+					targetObjectClass = self.getObjectByPath(/^[^#]*/.exec(target));
+				
+				if (!targetObject || !targetObjectClass.public) {
+					Feedback('broken-link', {'target': target, 'context': self.klass.name});
+				}
+			};
+			
 			// // Documentation links
 			text = text.replace(/<df-link target="([^"]*)">(.*?)<\/df-link>/g, function(tag, linkTarget, linkText) {
 				var linkHref = linkTarget.replace(/^[^#]+/, '$&.html'),
 					linkTitle = getShortDescriptionFor(linkTarget) || '';
+				
+				checkLink(linkTarget);
+				
 				return '<a href="' + linkHref + '" title="' + linkTitle + '">' + linkText + '</a>';
 			});
 			
@@ -276,6 +289,9 @@ module.exports.prototype = {
 				var linkText = className,
 					linkHref = className + '.html',
 					linkTitle = getShortDescriptionFor(className) || '';
+				
+				checkLink(className);
+				
 				return '<a href="' + linkHref + '" title="' + linkTitle + '"><code>' + linkText + '</code></a>';
 			});
 			
