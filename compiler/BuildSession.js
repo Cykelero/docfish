@@ -224,7 +224,10 @@ module.exports.prototype = {
 			thisObject = {
 				klass: klass,
 				tools: boundTools,
-				buildSession: this
+				buildSession: this,
+				getObjectByPath: function(linkTarget) {
+					return this.buildSession.getObjectByPath(linkTarget, this.klass);
+				}
 			};
 		
 		for (var m in this.textTools) {
@@ -258,7 +261,7 @@ module.exports.prototype = {
 			
 			// Substitute docfish tags
 			function getShortDescriptionFor(target) {
-				var targetObject = self.buildSession.getObjectByPath(target, self.klass);
+				var targetObject = self.getObjectByPath(target);
 				return self.tools.attribute(targetObject && targetObject.shortDescription);
 			};
 			
