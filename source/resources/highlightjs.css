@@ -78,6 +78,7 @@
 }
 
 /* For docfish only: gray undefined/null */
+.df-kind-event,
 .df-kind-undefined,
 .df-kind-null {
 	color: #9a9a9a;

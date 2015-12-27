@@ -200,7 +200,7 @@ h3 + .class-member {
 	margin-right: 4px;
 }
 
-.class-property-type {
+.class-property-type, .class-event-type {
 	margin-left: 4px;
 }
 
