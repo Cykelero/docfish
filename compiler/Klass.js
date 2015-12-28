@@ -99,6 +99,14 @@ module.exports.prototype = {
 			if (memberResult) return memberResult;
 		}
 		
+		for (var d = 0; d < this.details.length; d++) {
+			var detail = this.details[d];
+			
+			if (detail.id === name) { // ugh
+				return detail;
+			}
+		}
+		
 		return null;
 	}
 };
