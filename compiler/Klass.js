@@ -1,5 +1,6 @@
 var Utils = require('./utilities.js');
 
+var Detail = require('./Detail.js');
 var MemberGroup = require('./MemberGroup.js');
 var Export = require('./Export.js');
 
@@ -17,6 +18,7 @@ module.exports = function Klass(buildSession, rootNode) {
 	this.placeholderValues = [];
 	
 	this.exports = {};
+	this.details = [];
 	this.memberGroups = [];
 	
 	// Init
@@ -45,12 +47,19 @@ module.exports = function Klass(buildSession, rootNode) {
 		});
 	}
 	
-	// // Exports and members
+	// // Exports, details and members
 	var exports = Utils.childNamed(rootNode, 'exports');
 	if (exports) {
 		Utils.forEachChild(exports, function(groupNode) {
 			var exportObject = new Export(self.buildSession, groupNode);
 			self.exports[exportObject.id] = exportObject;
+		});
+	}
+	
+	var details = Utils.childNamed(rootNode, 'details');
+	if (details) {
+		Utils.forEachChild(details, function(detailNode) {
+			self.details.push(new Detail(self.buildSession, detailNode));
 		});
 	}
 	
@@ -70,6 +79,9 @@ module.exports.prototype = {
 		return this.template({
 			name: this.name,
 			discussion: tools.text(this.discussion),
+			details: this.details.map(function(detail) {
+				return detail.getHTML(self);
+			}),
 			related: tools.text(this.related),
 			memberGroups: this.memberGroups.map(function(member) {
 				return member.getHTML(self);
