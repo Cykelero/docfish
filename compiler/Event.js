@@ -1,6 +1,6 @@
 var Utils = require('./utilities.js');
 
-module.exports = function Event(buildSession, classNode) {
+module.exports = function Event(buildSession, rootNode) {
 	this.name = null;
 	
 	this.buildSession = buildSession;
@@ -14,9 +14,9 @@ module.exports = function Event(buildSession, classNode) {
 	
 	// Init
 	var self = this;
-	this.name = classNode.getAttribute('name');
+	this.name = rootNode.getAttribute('name');
 	
-	var callbackArgumentNode = Utils.childNamed(classNode, 'callback-argument');
+	var callbackArgumentNode = Utils.childNamed(rootNode, 'callback-argument');
 	if (callbackArgumentNode) {
 		this.callbackArgumentValues = [];
 		Utils.forEachChildWithTagName(callbackArgumentNode, 'value', function(valueNode) {
@@ -28,9 +28,9 @@ module.exports = function Event(buildSession, classNode) {
 		});
 	}
 	
-	this.shortDescription = Utils.childNamedText(classNode, 'short-description');
-	this.discussion = Utils.childNamedText(classNode, 'discussion'),
-	this.sample = Utils.childNamedText(classNode, 'sample');
+	this.shortDescription = Utils.childNamedText(rootNode, 'short-description');
+	this.discussion = Utils.childNamedText(rootNode, 'discussion'),
+	this.sample = Utils.childNamedText(rootNode, 'sample');
 };
 
 module.exports.prototype = {

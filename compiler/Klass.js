@@ -3,7 +3,7 @@ var Utils = require('./utilities.js');
 var MemberGroup = require('./MemberGroup.js');
 var Export = require('./Export.js');
 
-module.exports = function Klass(buildSession, classNode) {
+module.exports = function Klass(buildSession, rootNode) {
 	this.id = null;
 	this.name = null;
 	this.public = false;
@@ -24,12 +24,12 @@ module.exports = function Klass(buildSession, classNode) {
 		tools = this.buildSession.textToolsFor(this);
 	
 	// // Metadata
-	this.id = classNode.getAttribute('id');
-	if (classNode.getAttribute('public') === 'true') {
+	this.id = rootNode.getAttribute('id');
+	if (rootNode.getAttribute('public') === 'true') {
 		this.public = true;
 	}
 	
-	var metadata = Utils.childNamed(classNode, 'metadata');
+	var metadata = Utils.childNamed(rootNode, 'metadata');
 	this.name = Utils.childNamedText(metadata, 'name');
 	this.shortDescription = Utils.childNamedText(metadata, 'short-description');
 	this.discussion = Utils.childNamedText(metadata, 'discussion');
@@ -46,7 +46,7 @@ module.exports = function Klass(buildSession, classNode) {
 	}
 	
 	// // Exports and members
-	var exports = Utils.childNamed(classNode, 'exports');
+	var exports = Utils.childNamed(rootNode, 'exports');
 	if (exports) {
 		Utils.forEachChild(exports, function(groupNode) {
 			var exportObject = new Export(self.buildSession, groupNode);
@@ -54,7 +54,7 @@ module.exports = function Klass(buildSession, classNode) {
 		});
 	}
 	
-	var members = Utils.childNamed(classNode, 'members');
+	var members = Utils.childNamed(rootNode, 'members');
 	if (members) {
 		Utils.forEachChild(members, function(groupNode) {
 			self.memberGroups.push(new MemberGroup(self.buildSession, groupNode));

@@ -1,6 +1,6 @@
 var Utils = require('./utilities.js');
 
-module.exports = function Import(buildSession, classNode) {
+module.exports = function Import(buildSession, rootNode) {
 	this.from = null;
 	this.id = null;
 	
@@ -8,8 +8,8 @@ module.exports = function Import(buildSession, classNode) {
 	
 	// Init
 	var self = this;
-	this.from = classNode.getAttribute('from');
-	this.id = classNode.getAttribute('id');
+	this.from = rootNode.getAttribute('from');
+	this.id = rootNode.getAttribute('id');
 };
 
 module.exports.prototype = {

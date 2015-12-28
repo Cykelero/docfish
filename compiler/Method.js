@@ -1,6 +1,6 @@
 var Utils = require('./utilities.js');
 
-module.exports = function Method(buildSession, classNode) {
+module.exports = function Method(buildSession, rootNode) {
 	this.name = null;
 	
 	this.buildSession = buildSession;
@@ -16,13 +16,13 @@ module.exports = function Method(buildSession, classNode) {
 	
 	// Init
 	var self = this;
-	this.name = classNode.getAttribute('name');
+	this.name = rootNode.getAttribute('name');
 	
-	Utils.forEachChildWithTagName(classNode, 'signature', function(signatureNode) {
+	Utils.forEachChildWithTagName(rootNode, 'signature', function(signatureNode) {
 		self.signatures.push(signatureNode.textContent);
 	});
 	
-	Utils.forEachChildWithTagName(classNode, 'argument', function(argumentNode) {
+	Utils.forEachChildWithTagName(rootNode, 'argument', function(argumentNode) {
 		self.arguments.push({
 			name: argumentNode.getAttribute('name'),
 			type: argumentNode.getAttribute('type'),
@@ -31,10 +31,10 @@ module.exports = function Method(buildSession, classNode) {
 		});
 	});
 	
-	this.returns = Utils.childNamedText(classNode, 'returns');
-	this.shortDescription = Utils.childNamedText(classNode, 'short-description');
-	this.discussion = Utils.childNamedText(classNode, 'discussion'),
-	this.sample = Utils.childNamedText(classNode, 'sample');
+	this.returns = Utils.childNamedText(rootNode, 'returns');
+	this.shortDescription = Utils.childNamedText(rootNode, 'short-description');
+	this.discussion = Utils.childNamedText(rootNode, 'discussion'),
+	this.sample = Utils.childNamedText(rootNode, 'sample');
 };
 
 module.exports.prototype = {

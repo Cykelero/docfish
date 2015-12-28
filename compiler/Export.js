@@ -5,7 +5,7 @@ var Property = require('./Property.js');
 var Event = require('./Event.js');
 var Import = require('./Import.js');
 
-module.exports = function Export(buildSession, classNode) {
+module.exports = function Export(buildSession, rootNode) {
 	this.id = null;
 	
 	this.buildSession = buildSession;
@@ -15,10 +15,10 @@ module.exports = function Export(buildSession, classNode) {
 	
 	// Init
 	var self = this;
-	this.id = classNode.getAttribute('id');
+	this.id = rootNode.getAttribute('id');
 	
 	// // Members
-	Utils.forEachChild(classNode, function(memberNode) {
+	Utils.forEachChild(rootNode, function(memberNode) {
 		var memberClass;
 		
 		switch (memberNode.nodeName) {

@@ -1,6 +1,6 @@
 var Utils = require('./utilities.js');
 
-module.exports = function Property(buildSession, classNode) {
+module.exports = function Property(buildSession, rootNode) {
 	this.name = null;
 	this.type = null;
 	
@@ -15,13 +15,13 @@ module.exports = function Property(buildSession, classNode) {
 	
 	// Init
 	var self = this;
-	this.name = classNode.getAttribute('name');
-	this.type = Utils.childNamedText(classNode, 'type');
-	this.shortDescription = Utils.childNamedText(classNode, 'short-description');
-	this.discussion = Utils.childNamedText(classNode, 'discussion');
-	this.defaultValue = Utils.childNamedText(classNode, 'default-value');
-	this.isReadOnly = !!Utils.childNamed(classNode, 'read-only');
-	this.sample = Utils.childNamedText(classNode, 'sample');
+	this.name = rootNode.getAttribute('name');
+	this.type = Utils.childNamedText(rootNode, 'type');
+	this.shortDescription = Utils.childNamedText(rootNode, 'short-description');
+	this.discussion = Utils.childNamedText(rootNode, 'discussion');
+	this.defaultValue = Utils.childNamedText(rootNode, 'default-value');
+	this.isReadOnly = !!Utils.childNamed(rootNode, 'read-only');
+	this.sample = Utils.childNamedText(rootNode, 'sample');
 };
 
 module.exports.prototype = {
