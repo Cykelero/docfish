@@ -28,11 +28,11 @@
 .css .hljs-id,
 .css .hljs-class,
 .css .hljs-pseudo {
-	color: #f69f1f;
+	color: #f69705;
 }
 
 .df-kindborder-multiple {
-	border-color: #f69f1f;
+	border-color: #f69705;
 }
 
 /* Blue numbers, boolean type */
