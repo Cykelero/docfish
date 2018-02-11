@@ -9,9 +9,17 @@ var Args = require('./args.js');
 
 // Init
 Args.describe({
+	source: {
+		type: 'string',
+		description: 'The path to the folder to build'
+	},
+	destination: {
+		type: 'string',
+		description: 'The path where to save the build product'
+	},
 	watch: {
 		type: 'boolean',
-		description: 'Whether to watch for changes in the buildPath and rebuild the documentation every time one occurs.'
+		description: 'Whether to watch for changes in the buildPath and rebuild the documentation every time one occurs'
 	},
 	check: {
 		type: 'boolean',
@@ -27,12 +35,18 @@ Feedback.setup({
 	},
 });
 
+// Setup options
 if (Args.values.check) Feedback.enableChannel('broken-link');
+
+if (!Args.values.source || !Args.values.destination) {
+	console.error('Please specify both a source and a destination.');
+	process.exit(1);
+}
 
 var buildOptions = {
 	name: 'Candybox Reference',
-	sourcePath: '../source/',
-	buildPath: '../build/',
+	sourcePath: Args.values.source,
+	buildPath: Args.values.destination,
 	
 	globalPrefix: 'cx.'
 };
@@ -47,8 +61,10 @@ function build() {
 	Feedback('main', 'Done!');
 }
 
+// Watch if requested
 if (Args.values.watch) {
 	Watch([buildOptions.sourcePath], build);
 }
 
+// Perform (first) build
 build();
