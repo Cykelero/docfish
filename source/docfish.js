@@ -1,6 +1,7 @@
 #! /usr/bin/env node
 
-// Requires
+var path = require('path');
+
 var Utils = require('./utilities.js');
 var Feedback = require('./feedback.js');
 var BuildSession = require('./BuildSession.js');
@@ -42,6 +43,9 @@ if (!Args.values.source || !Args.values.destination) {
 	console.error('Please specify both a source and a destination.');
 	process.exit(1);
 }
+
+Args.values.source = path.join(Args.values.source, '/');
+Args.values.destination = path.join(Args.values.destination, '/');
 
 var buildOptions = {
 	name: 'Candybox Reference',

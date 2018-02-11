@@ -10,7 +10,7 @@ var Klass;
 module.exports = function BuildSession(options) {
 	this.paths = {
 		unitSource: options.sourcePath,
-		resourcesSource: 'resources/',
+		resourcesSource: __dirname + '/resources/',
 		build: options.buildPath,
 		resourcesBuild: options.buildPath + 'resources/'
 	};
@@ -363,6 +363,7 @@ module.exports.prototype = {
 	},
 	
 	getTemplate: function(name) {
-		return Handlebars.compile(Utils.readFile(name + this.extensions.template));
+		var templateString = Utils.readFile(__dirname + '/' + name + this.extensions.template);
+		return Handlebars.compile(templateString);
 	}
 };
