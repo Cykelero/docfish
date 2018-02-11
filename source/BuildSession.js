@@ -9,9 +9,8 @@ var Klass;
 
 module.exports = function BuildSession(options) {
 	this.paths = {
-		source: options.sourcePath,
-		unitSource: options.sourcePath + 'units/',
-		resourcesSource: options.sourcePath + 'resources/',
+		unitSource: options.sourcePath,
+		resourcesSource: 'resources/',
 		build: options.buildPath,
 		resourcesBuild: options.buildPath + 'resources/'
 	};

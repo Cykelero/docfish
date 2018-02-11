@@ -1,11 +1,2 @@
-notes/*
-build/*
-compiler/node_modules/*
-
-# osx noise
-.DS_Store
-profile
-
-# svn & cvs
-.svn
-CVS
+notes
+node_modules
