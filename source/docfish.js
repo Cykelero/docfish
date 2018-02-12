@@ -47,12 +47,13 @@ if (!Args.values.source || !Args.values.destination) {
 Args.values.source = path.join(Args.values.source, '/');
 Args.values.destination = path.join(Args.values.destination, '/');
 
+var metadata = require(Args.values.source + 'meta.json');
+
 var buildOptions = {
-	name: 'Candybox Reference',
+	name: metadata.name || 'Documentation',
+	globalPrefix: metadata.globalPrefix || null,
 	sourcePath: Args.values.source,
 	buildPath: Args.values.destination,
-	
-	globalPrefix: 'cx.'
 };
 
 function build() {

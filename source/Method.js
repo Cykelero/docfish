@@ -58,7 +58,7 @@ module.exports.prototype = {
 			};
 		});
 		
-		if (this.name.indexOf(globalPrefix) === 0) {
+		if (globalPrefix && this.name.indexOf(globalPrefix) === 0) {
 			formattedName = '<strong class="global-prefix">'
 				+ globalPrefix
 				+ '</strong>'
