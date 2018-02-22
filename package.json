@@ -1,0 +1,26 @@
+{
+  "name": "docfish",
+  "version": "1.0.0",
+  "description": "Write rich documentation for your lovely API",
+  "main": "source/docfish.js",
+  "bin": "source/docfish.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cykelero/docfish.git"
+  },
+  "author": "Nathan Manceaux-Panot",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cykelero/docfish/issues"
+  },
+  "homepage": "https://github.com/cykelero/docfish#readme",
+  "dependencies": {
+    "handlebars": "^4.0.11",
+    "highlight.js": "^9.12.0",
+    "htmltidy": "0.0.6",
+    "libtidy": "^0.3.7",
+    "node-watch": "^0.5.7",
+    "rimraf": "^2.6.2",
+    "xmldom": "^0.1.27"
+  }
+}

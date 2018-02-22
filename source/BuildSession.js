@@ -3,7 +3,7 @@ var Feedback = require('./feedback.js');
 var xmldom = require('xmldom');
 var Handlebars = require('handlebars');
 var Highlight = require('highlight.js');
-var tidy = require('htmltidy').tidy;
+var tidy = require('libtidy').tidyBuffer;
 
 var Klass;
 
@@ -195,6 +195,12 @@ module.exports.prototype = {
 		});
 		
 		this.tidyHTML(completeHTML, function(error, tidiedHTML) {
+			if (error) {
+				console.warn(`An error occurred tidying ${unit.name}:`);
+				console.warn(error);
+				console.warn('The page has been generated untidied.');
+			}
+			
 			Utils.writeFile(self.paths.build + unit.name + self.extensions.builtPage, tidiedHTML);
 		});
 	},
@@ -209,11 +215,13 @@ module.exports.prototype = {
 			'tidy-mark': false,
 			'wrap': 0,
 			//'preserve-entities': true
-		}, function(error, tidiedHTML) {
+		}, function(error, result) {
 			if (error) {
-				callback(error);
+				callback(error, html);
+			} else if (!result.output) {
+				callback(result.errlog, html);
 			} else {
-				tidiedHTML = tidiedHTML.replace(/( {4})/g, '\t');
+				tidiedHTML = result.output.toString().replace(/( {4})/g, '\t');
 				callback(null, tidiedHTML);
 			}
 		});
