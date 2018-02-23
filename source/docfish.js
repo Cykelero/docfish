@@ -5,7 +5,7 @@ var path = require('path');
 var Utils = require('./utilities.js');
 var Feedback = require('./feedback.js');
 var BuildSession = require('./BuildSession.js');
-var Watch = require('node-watch');
+var chokidar = require('chokidar');
 var Args = require('./args.js');
 
 // Init
@@ -68,7 +68,12 @@ function build() {
 
 // Watch if requested
 if (Args.values.watch) {
-	Watch([buildOptions.sourcePath], build);
+	chokidar.watch(buildOptions.sourcePath, {
+		ignoreInitial: true
+	}).on('all', function() {
+		Feedback('main', '');
+		build();
+	});
 }
 
 // Perform (first) build
