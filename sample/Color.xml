@@ -1,0 +1,290 @@
+<Class id="Color" public="true">
+	<metadata>
+		<name>Color</name>
+		<short-description>Describes a color and provides manipulation methods</short-description>
+		<discussion>
+		<![CDATA[
+			<code>Color</code> objects facilitate the creation and manipulation of colors.<br>
+			If you need to supply a method with a color, you don't need to explicitely instantiate a <code>Color</code> object; anywhere a <code>Color</code> is accepted as argument, you can instead pass any value that <code>cx.color()</code> accepts.
+		]]>
+		</discussion>
+		<related>
+		<![CDATA[
+			<code>Color</code> objects are mainly used with <df-class>GraphicsNode</df-class> methods, either directly for a <df-class>ShapeCoating</df-class> or to create a <df-class>Gradient</df-class> object. <df-link target="Scene#background"><code>Scene.background</code></df-link> accepts <code>Color</code> objects as well.
+		]]>
+		</related>
+		<placeholder-values>
+			<placeholder name="sampleMake">cx.color("red")</placeholder>
+			<placeholder name="sampleName">red</placeholder>
+			<placeholder name="sampleMake2">cx.color("blue")</placeholder>
+			<placeholder name="sampleName2">blue</placeholder>
+			<placeholder name="sampleAttributeName1">s</placeholder>
+			<placeholder name="sampleAttributeValue1">5</placeholder>
+			<placeholder name="sampleAttributeName2">l</placeholder>
+			<placeholder name="sampleAttributeValue2">.2</placeholder>
+			<placeholder name="ObjectPrimitive.like">-like</placeholder>
+		</placeholder-values>
+	</metadata>
+	<members>
+		<group name="Creating Color objects">
+			<method name="cx.color">
+				<signature></signature>
+				<returns>Color</returns>
+				<short-description>Creates a black color</short-description>
+				<discussion>
+				<![CDATA[
+					Returns a new <code>Color</code> initialized to black.
+				]]>
+				</discussion>
+				<sample>
+				<![CDATA[
+var black = cx.color();
+				]]>
+				</sample>
+			</method>
+			<method name="cx.color">
+				<signature>Number red, Number green, Number blue, [Number alpha = 1]</signature>
+				<argument name="red" type="Number">The red component, ranging from 0 to 1.</argument>
+				<argument name="green" type="Number">The green component, ranging from 0 to 1.</argument>
+				<argument name="blue" type="Number">The blue component, ranging from 0 to 1.</argument>
+				<argument name="alpha" type="Number" default="1">The alpha component, ranging from 0 to 1.</argument>
+				<returns>Color</returns>
+				<short-description>Creates a color from RGBA values</short-description>
+				<discussion>
+				<![CDATA[
+					Returns a new <code>Color</code> initialized with the supplied RGBA components. All components are interpreted as ranging from 0 to 1.
+				]]>
+				</discussion>
+				<sample>
+				<![CDATA[
+var purple = cx.color(.6, 0, 1);
+				]]>
+				</sample>
+			</method>
+			<method name="cx.color.hsl">
+				<signature>Number hue, Number saturation, Number lightness, [Number alpha = 1]</signature>
+				<argument name="hue" type="Number">The hue component, ranging from 0 to 1.</argument>
+				<argument name="saturation" type="Number">The saturation component, ranging from 0 to 1.</argument>
+				<argument name="lightness" type="Number">The lightness component, ranging from 0 to 1.</argument>
+				<argument name="alpha" type="Number" default="1">The alpha component, ranging from 0 to 1.</argument>
+				<returns>Color</returns>
+				<short-description>Creates a color from HSLA values</short-description>
+				<discussion>
+				<![CDATA[
+					Returns a new <code>Color</code> initialized with the supplied HSLA components. All components are interpreted as ranging from 0 to 1.
+				]]>
+				</discussion>
+				<sample>
+				<![CDATA[
+var yellow = cx.color.hsl(.15, 1, .5);
+				]]>
+				</sample>
+			</method>
+			<method name="cx.color.gray">
+				<signature>Number lightness, [Number alpha = 1]</signature>
+				<argument name="lightness" type="Number">The lightness component, ranging from 0 to 1.</argument>
+				<argument name="alpha" type="Number" default="1">The alpha component, ranging from 0 to 1.</argument>
+				<returns>Color</returns>
+				<short-description>Creates a desaturated color from a lightness value</short-description>
+				<discussion>
+				<![CDATA[
+					Returns a new <code>Color</code> initialized with the supplied <df-arg>lightness</df-arg> and <df-arg>alpha</df-arg>, and a <code>saturation</code> of <code>0</code>. All components are interpreted as ranging from 0 to 1.
+				]]>
+				</discussion>
+				<sample>
+				<![CDATA[
+var darkGray = cx.color.gray(.25);
+				]]>
+				</sample>
+			</method>
+			<method name="cx.color.random">
+				<signature>[Object constraints]</signature>
+				<argument name="constraints" type="Object">The constraints on the new color.</argument>
+				<returns>Color</returns>
+				<short-description>Creates a random color, optionally with constraints</short-description>
+				<discussion>
+				<![CDATA[
+					Returns a new <code>Color</code> initialized with random components. By default, the alpha component is set to <code>1</code>.<br>
+					If <df-arg>constraints</df-arg> is passed, for each of its <code>key</code>-<code>value</code> couples, the <code>value</code> constraint is applied to the <code>key</code> component.<br>
+					A constraint can either be a number, which will be used as the value for the component, or an array of two numbers, which will be the minimum and maximum values for the component, respectively. 
+				]]>
+				</discussion>
+				<sample>
+				<![CDATA[
+var randomColor = cx.color.random();
+var randomSaturatedColor = cx.color.random({s: 1});
+var randomLightColor = cx.color.random({l: [.7, 1]});
+var randomLightSaturatedColor = cx.color.random({s: 1, l: [.7, 1]});
+var randomlyOpaqueColor = cx.color.random({a: [0, 1]});
+				]]>
+				</sample>
+			</method>
+			<method name="cx.color">
+				<signature>String cssColor</signature>
+				<argument name="cssColor" type="String">A valid CSS color.</argument>
+				<returns>Color</returns>
+				<short-description>Creates a color from a CSS color</short-description>
+				<discussion>
+				<![CDATA[
+					Returns a new <code>Color</code> initialized with the supplied CSS color.
+				]]>
+				</discussion>
+				<sample>
+				<![CDATA[
+var red = cx.color("red");
+var green = cx.color("#008000");
+var blue = cx.color("rgb(0, 0, 255)");
+var transparent = cx.color("transparent");
+				]]>
+				</sample>
+			</method>
+			<method name="cx.color">
+				<signature>Array array</signature>
+				<argument name="array" type="Array">An Array containing three or four numbers, to be interpreted as RGBA components.</argument>
+				<returns>Color</returns>
+				<short-description>Creates a color from an array of RGBA values</short-description>
+				<discussion>
+				<![CDATA[
+					Returns a new <code>Color</code> initialized using the elements of <df-arg>array</df-arg> as RGBA components. If <df-arg>array</df-arg> only has three elements, the color will have an alpha of 1.
+				]]>
+				</discussion>
+				<sample>
+				<![CDATA[
+var pink = cx.color([1, .4, .7]);
+				]]>
+				</sample>
+			</method>
+			<method name="cx.color">
+				<signature>Color color</signature>
+				<argument name="color" type="Color">A <code>Color</code> object to copy.</argument>
+				<returns>Color</returns>
+				<short-description>Creates a color from another one</short-description>
+				<discussion>
+				<![CDATA[
+					Returns a new <code>Color</code> initialized with the values of <df-arg>color</df-arg>.
+				]]>
+				</discussion>
+				<sample>
+				<![CDATA[
+var red = cx.color(1, 0, 0);
+var red2 = cx.color(red);
+				]]>
+				</sample>
+			</method>
+			<import from="ObjectPrimitive" id="create" />
+		</group>
+		<group name="Manipulating Color objects">
+			<property name="r">
+				<type>Number</type>
+				<short-description>The red RGB component</short-description>
+				<discussion>
+				<![CDATA[
+					The red component of the <code>Color</code>, in RGB space. Ranges from 0 to 1.
+				]]>
+				</discussion>
+			</property>
+			<property name="g">
+				<type>Number</type>
+				<short-description>The green RGB component</short-description>
+				<discussion>
+				<![CDATA[
+					The green component of the <code>Color</code>, in RGB space. Ranges from 0 to 1.
+				]]>
+				</discussion>
+			</property>
+			<property name="b">
+				<type>Number</type>
+				<short-description>The blue RGB component</short-description>
+				<discussion>
+				<![CDATA[
+					The blue component of the <code>Color</code>, in RGB space. Ranges from 0 to 1.
+				]]>
+				</discussion>
+			</property>
+			<property name="h">
+				<type>Number</type>
+				<short-description>The HSL hue</short-description>
+				<discussion>
+				<![CDATA[
+					The hue of the <code>Color</code>, in HSL space. Ranges from 0 to 1.
+				]]>
+				</discussion>
+			</property>
+			<property name="s">
+				<type>Number</type>
+				<short-description>The HSL saturation</short-description>
+				<discussion>
+				<![CDATA[
+					The saturation of the <code>Color</code>, in HSL space. Ranges from 0 to 1.
+				]]>
+				</discussion>
+			</property>
+			<property name="l">
+				<type>Number</type>
+				<short-description>The HSL lightness</short-description>
+				<discussion>
+				<![CDATA[
+					The lightness of the <code>Color</code>, in HSL space. Ranges from 0 to 1.
+				]]>
+				</discussion>
+			</property>
+			<property name="a">
+				<type>Number</type>
+				<short-description>The alpha</short-description>
+				<discussion>
+				<![CDATA[
+					The alpha of the <code>Color</code>. Ranges from 0 to 1. A value of 0 makes the <code>Color</code> completely transparent, while 1 makes it fully opaque.
+				]]>
+				</discussion>
+			</property>
+			<method name="blendWith">
+				<signature>Color color, [Number ratio = 0.5]</signature>
+				<argument name="color" type="Color">A color to mix in.</argument>
+				<argument name="ratio" type="Number" default=".5">The ratio to use when mixing the two colors, ranging from 0 to 1. A value of 0 means the supplied color has no effect while a value of 1 completely replaces the current color.</argument>
+				<returns>self</returns>
+				<short-description>Mixes in another color</short-description>
+				<discussion>
+				<![CDATA[
+					Blends the <code>Color</code> with <df-arg>color</df-arg> using a simple weighed mean in RGB space. <df-arg>ratio</df-arg>, ranging from 0 to 1, determines the weight of the added color. Alpha is unaffected.
+				]]>
+				</discussion>
+				<sample>
+				<![CDATA[
+var purple = cx.color("red").blendWith("blue");
+var reddishPurple = cx.color("red").blendWith("blue", .35);
+				]]>
+				</sample>
+			</method>
+			<import from="ObjectPrimitive" id="mutate" />
+			<import from="SetMethod" id="mutate" />
+			<import from="ObjectPrimitive" id="read" />
+		</group>
+		<group name="Exporting color values">
+			<method name="toCSS">
+				<signature></signature>
+				<returns>String</returns>
+				<short-description>Returns the color as a CSS color</short-description>
+				<discussion>
+				<![CDATA[
+					Returns a CSS representation of the <code>Color</code>.
+				]]>
+				</discussion>
+				<sample>
+				<![CDATA[
+return cx.color(1, 0, 0).toCSS(); // returns "rgb(255, 0, 0)"
+				]]>
+				</sample>
+			</method>
+			<method name="toCanvasStyle">
+				<signature></signature>
+				<returns>String</returns>
+				<short-description>Returns the color as a CSS color (alias)</short-description>
+				<discussion>
+				<![CDATA[
+					Aliases <df-link target="#toCSS">toCSS()</df-link>.
+				]]>
+				</discussion>
+			</method>
+		</group>
+	</members>
+</Class>

@@ -1,0 +1,30 @@
+<Class id="SetMethod">
+	<metadata>
+	</metadata>
+	<exports>
+		<export id="mutate">
+			<method name="set">
+				<signature>Object values</signature>
+				<argument name="values" type="Object">A map of property names and values.</argument>
+				<returns>self</returns>
+				<short-description>Sets the value of multiple properties</short-description>
+				<discussion>
+				<![CDATA[
+					For each <code>key</code>-<code>value</code> couple in <df-arg>values</df-arg>, sets the <code>key</code> attribute of the <code>{df:$classname}</code> to <code>value</code>. This makes it easy to set multiple attributes on the object at once.
+				]]>
+				</discussion>
+				<sample>
+				<![CDATA[
+var {df:sampleName} = {df:sampleMake};
+{df:sampleName}.set({
+	{df:sampleAttributeName1}: {df:sampleAttributeValue1},
+	{df:sampleAttributeName2}: {df:sampleAttributeValue2}
+});
+
+return {df:sampleName}.{df:sampleAttributeName1}; // returns `{df:sampleAttributeValue1}`
+				]]>
+				</sample>
+			</method>
+		</export>
+	</exports>
+</Class>

@@ -1,0 +1,72 @@
+<Class id="ObjectPrimitive">
+	<metadata>
+	</metadata>
+	<exports>
+		<export id="read">
+			<method name="equals">
+				<signature>{df:$classname} other</signature>
+				<argument name="other" type="{df:$classname}">A <code>{df:$classname}</code>{df:ObjectPrimitive.like} to be compared.</argument>
+				<returns>Boolean</returns>
+				<short-description>Compares two <code>{df:$classname}</code> objects</short-description>
+				<discussion>
+				<![CDATA[
+					Returns whether the <code>{df:$classname}</code> is equal to <df-arg>other</df-arg> by comparing each component pair.
+				]]>
+				</discussion>
+				<sample>
+				<![CDATA[
+var {df:sampleName} = {df:sampleMake};
+var {df:sampleName}2 = {df:sampleMake};
+var {df:sampleName2} = {df:sampleMake2};
+
+return {df:sampleName}.equals({df:sampleName2}); // returns `false`
+return {df:sampleName}.equals({df:sampleName}2); // returns `true`
+				]]>
+				</sample>
+			</method>
+		</export>
+		<export id="create">
+			<method name="copy">
+				<signature></signature>
+				<returns>{df:$classname}</returns>
+				<short-description>Creates a copy of the <code>{df:$classname}</code></short-description>
+				<discussion>
+				<![CDATA[
+					Returns a new <code>{df:$classname}</code> of which the components are a copy of the current <code>{df:$classname}</code>'s components.
+				]]>
+				</discussion>
+				<sample>
+				<![CDATA[
+var {df:sampleName} = {df:sampleMake};
+var {df:sampleName}2 = {df:sampleName}.copy();
+
+return {df:sampleName}2.equals({df:sampleName}); // returns `true`
+				]]>
+				</sample>
+			</method>
+		</export>
+		<export id="mutate">
+			<method name="setTo">
+				<signature>{df:$classname} other</signature>
+				<argument name="other" type="{df:$classname}">A <code>{df:$classname}</code>{df:ObjectPrimitive.like} to match.</argument>
+				<returns>self</returns>
+				<short-description>Copies the values of another <code>{df:$classname}</code></short-description>
+				<discussion>
+				<![CDATA[
+					Sets the components of the <code>{df:$classname}</code> to match these of <df-arg>other</df-arg>.
+				]]>
+				</discussion>
+				<sample>
+				<![CDATA[
+var some{df:$classname} = {df:sampleMake};
+var {df:sampleName2} = {df:sampleMake2};
+
+some{df:$classname}.setTo({df:sampleName2});
+
+return some{df:$classname}.equals({df:sampleName2}); // returns `true`
+				]]>
+				</sample>
+			</method>
+		</export>
+	</exports>
+</Class>
