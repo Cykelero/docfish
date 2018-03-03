@@ -12,7 +12,7 @@ module.exports = function Method(buildSession, rootNode) {
 	this.returns = null;
 	this.shortDescription = null;
 	this.discussion = null;
-	this.sample = null;
+	this.samples = [];
 	
 	// Init
 	var self = this;
@@ -34,7 +34,13 @@ module.exports = function Method(buildSession, rootNode) {
 	this.returns = Utils.childNamedText(rootNode, 'returns');
 	this.shortDescription = Utils.childNamedText(rootNode, 'short-description');
 	this.discussion = Utils.childNamedText(rootNode, 'discussion'),
-	this.sample = Utils.childNamedText(rootNode, 'sample');
+	
+	Utils.forEachChildWithTagName(rootNode, 'sample', function(sampleNode) {
+		self.samples.push({
+			name: sampleNode.getAttribute('name'),
+			content: sampleNode.textContent
+		});
+	});
 };
 
 module.exports.prototype = {
@@ -80,7 +86,12 @@ module.exports.prototype = {
 			
 			discussion: tools.text(this.discussion),
 			
-			sample: tools.code(this.sample)
+			samples: this.samples.map(sample => {
+				return {
+					name: sample.name,
+					content: tools.code(sample.content)
+				};
+			})
 		});
 	}
 };

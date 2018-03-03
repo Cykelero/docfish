@@ -13,8 +13,11 @@
 		{{#if is-read-only}}
 			<span class="is-read-only">Read-only.</span>
 		{{/if}}
-		{{#if sample}}
-			<pre class="sample class-property-sample hljs"><code>{{{sample}}}</code></pre>
-		{{/if}}
+		{{#each samples}}
+			{{#if name}}
+				<h5><span class="caption">sample</span> {{name}}</code>
+			{{/if}}
+			<pre class="sample class-property-sample hljs"><code>{{{content}}}</code></pre>
+		{{/each}}
 	</div>
 </div>

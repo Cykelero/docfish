@@ -11,7 +11,7 @@ module.exports = function Property(buildSession, rootNode) {
 	this.discussion = null;
 	this.defaultValue = null;
 	this.isReadOnly = null;
-	this.sample = null;
+	this.samples = [];
 	
 	// Init
 	var self = this;
@@ -21,7 +21,13 @@ module.exports = function Property(buildSession, rootNode) {
 	this.discussion = Utils.childNamedText(rootNode, 'discussion');
 	this.defaultValue = Utils.childNamedText(rootNode, 'default-value');
 	this.isReadOnly = !!Utils.childNamed(rootNode, 'read-only');
-	this.sample = Utils.childNamedText(rootNode, 'sample');
+	
+	Utils.forEachChildWithTagName(rootNode, 'sample', function(sampleNode) {
+		self.samples.push({
+			name: sampleNode.getAttribute('name'),
+			content: sampleNode.textContent
+		});
+	});
 };
 
 module.exports.prototype = {
@@ -36,7 +42,13 @@ module.exports.prototype = {
 			discussion: tools.text(this.discussion),
 			'default-value': this.defaultValue,
 			'is-read-only': this.isReadOnly,
-			sample: tools.code(this.sample)
+			
+			samples: this.samples.map(sample => {
+				return {
+					name: sample.name,
+					content: tools.code(sample.content)
+				};
+			})
 		});
 	}
 };

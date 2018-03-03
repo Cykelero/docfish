@@ -108,6 +108,26 @@ h3 {
 	font-weight: normal;
 }
 
+h5 {
+	margin: 17px 0 11px -1px;
+	font-size: 17px;
+	letter-spacing: 0.2px;
+	color: #8b55d0;
+	font-weight: normal;
+}
+
+h5 .caption {
+	margin-right: 2px;
+	font-size: 15px;
+	letter-spacing: 0.6px;
+	font-weight: 500;
+	text-transform: uppercase;
+}
+
+h5 .caption:after {
+	content: ':';
+}
+
 a {
 	border-bottom: 1px solid #e73a8b;
 	
