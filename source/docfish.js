@@ -1,6 +1,7 @@
 #! /usr/bin/env node
 
 var path = require('path');
+var fs = require('fs');
 
 var Utils = require('./utilities.js');
 var Feedback = require('./feedback.js');
@@ -47,7 +48,11 @@ if (!Args.values.source || !Args.values.destination) {
 Args.values.source = path.join(Args.values.source, '/');
 Args.values.destination = path.join(Args.values.destination, '/');
 
-var metadata = require(Args.values.source + 'meta.json');
+var metadata = {};
+
+try {
+	metadata = fs.readFileSync(Args.values.source + 'meta.json', 'utf8');
+} catch (e) {}
 
 var buildOptions = {
 	name: metadata.name || 'Documentation',
