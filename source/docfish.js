@@ -51,7 +51,7 @@ Args.values.destination = path.join(Args.values.destination, '/');
 var metadata = {};
 
 try {
-	metadata = fs.readFileSync(Args.values.source + 'meta.json', 'utf8');
+	metadata = JSON.parse(fs.readFileSync(Args.values.source + 'meta.json', 'utf8'));
 } catch (e) {}
 
 var buildOptions = {
