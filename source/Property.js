@@ -45,7 +45,7 @@ module.exports.prototype = {
 			
 			samples: this.samples.map(sample => {
 				return {
-					name: sample.name,
+					name: tools.text(sample.name),
 					content: tools.code(sample.content)
 				};
 			})
