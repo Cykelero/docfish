@@ -135,6 +135,14 @@ a {
 	color: #e73a8b;
 }
 
+ul, ol {
+	margin-bottom: 0;
+}
+
+p:first-child, ul:first-child, ol:first-child {
+	margin-top: 0;
+}
+
 table {
 	margin: 13px 0 17px;
 	
@@ -264,4 +272,10 @@ h3 + .class-member {
 code, table td:first-child, .class-method-argument {
 	font-size: .9em;
 	font-family: Menlo, Monaco, "Lucida Console", monospace;
+}
+
+/* Content styles */
+
+.df-list-with-title > ul {
+	margin-top: .3em;
 }
