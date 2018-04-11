@@ -14,10 +14,16 @@ module.exports = function Import(buildSession, rootNode) {
 
 module.exports.prototype = {
 	getHTML: function(hostClass) {
-		return this.buildSession.getUnitById(this.from).getExport(this.id).getHTML(hostClass);
+		return this._getExport().getHTML(hostClass);
 	},
 	
 	getMemberByName: function(name) {
-		return this.buildSession.getUnitById(this.from).getExport(this.id).getMemberByName(name);
+		return this._getExport().getMemberByName(name);
+	},
+	
+	_getExport() {
+		const unit = this.buildSession.getUnitById(this.from);
+		if (!unit) throw new Error(`Unit “${this.from}” does not exist.`);
+		return unit.getExport(this.id);
 	}
 };
