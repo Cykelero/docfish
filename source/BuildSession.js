@@ -201,7 +201,7 @@ module.exports.prototype = {
 				console.warn('The page has been generated untidied.');
 			}
 			
-			Utils.writeFile(self.paths.build + unit.name + self.extensions.builtPage, tidiedHTML);
+			Utils.writeFile(self.paths.build + unit.id + self.extensions.builtPage, tidiedHTML);
 		});
 	},
 	
@@ -292,12 +292,12 @@ module.exports.prototype = {
 				return '<a href="' + linkHref + '" title="' + linkTitle + '">' + linkText + '</a>';
 			});
 			
-			text = text.replace(/<df-class>(.*?)<\/df-class>/g, function(tag, className) {
-				var linkText = className,
-					linkHref = className + '.html',
-					linkTitle = getShortDescriptionFor(className) || '';
+			text = text.replace(/<df-class>(.*?)<\/df-class>/g, function(tag, classId) {
+				var linkText = classId,
+					linkHref = classId + '.html',
+					linkTitle = getShortDescriptionFor(classId) || '';
 				
-				checkLink(className);
+				checkLink(classId);
 				
 				return '<a href="' + linkHref + '" title="' + linkTitle + '"><code>' + linkText + '</code></a>';
 			});
