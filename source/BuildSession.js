@@ -190,7 +190,7 @@ module.exports.prototype = {
 		var unitGeneratedHTML = unit.getHTML();
 		
 		var completeHTML = this.pageTemplate({
-			title: unit.name + ' — ' + this.productName,
+			title: unit.name ? `${unit.name} — ${this.productName}` : this.productName,
 			pageHTML: unitGeneratedHTML
 		});
 		

@@ -77,7 +77,7 @@ module.exports.prototype = {
 			tools = this.buildSession.textToolsFor(this);
 		
 		return this.template({
-			name: this.name,
+			pageName: this.name || this.buildSession.productName,
 			discussion: tools.text(this.discussion),
 			details: this.details.map(function(detail) {
 				return detail.getHTML(self);
