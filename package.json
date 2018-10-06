@@ -1,6 +1,6 @@
 {
   "name": "docfish",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Write rich documentation for your lovely API",
   "main": "source/docfish.js",
   "bin": "source/docfish.js",
