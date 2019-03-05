@@ -41,7 +41,7 @@ Feedback.setup({
 if (Args.values.check) Feedback.enableChannel('broken-link');
 
 if (!Args.values.source || !Args.values.destination) {
-	console.error('Please specify both a source and a destination.');
+	console.error('Please specify both a --source and a --destination.');
 	process.exit(1);
 }
 

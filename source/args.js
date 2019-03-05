@@ -25,42 +25,43 @@ function describe(definitions) {
 		
 		var argValue;
 		
-		// Cast type
-		switch (argDefinition.type) {
-			case 'boolean':
-				if (typeof(rawArgValue) === 'boolean' || typeof(rawArgValue) === 'undefined') {
-					argValue = !!rawArgValue;
-				} else {
-					switch (rawArgValue) {
-						case '':
-						case 'false':
-						case '0':
-						case 'no':
-						case 'nay':
-							argValue = false;
-							break;
-						default:
-							argValue = true;
-					}
-				}
-				break;
-			case 'string':
-				argValue = String(rawArgValue);
-				break;
-			case 'number':
-				argValue = Number(rawArgValue);
-				break;
-			default:
-				argValue = rawArgValue;
-		}
-		
-		// Apply filter
-		if (argDefinition.parse) {
-			argValue = argDefinition.parse(argValue);
+		// Cast and filter value
+		if (rawArgValue !== undefined) {
+			argValue = castRawArgumentValue(rawArgValue, argDefinition);
+			
+			if (argDefinition.parse) {
+				argValue = argDefinition.parse(argValue);
+			}
 		}
 		
 		values[argName] = argValue;
 	});
+}
+
+function castRawArgumentValue(rawArgValue, argDefinition) {
+	switch (argDefinition.type) {
+		case 'boolean':
+			if (typeof(rawArgValue) === 'boolean' || typeof(rawArgValue) === 'undefined') {
+				return !!rawArgValue;
+			} else {
+				switch (rawArgValue) {
+					case '':
+					case 'false':
+					case '0':
+					case 'no':
+					case 'nay':
+						return false;
+					default:
+						return true;
+				}
+			}
+		case 'string':
+			return String(rawArgValue);
+		case 'number':
+			return Number(rawArgValue);
+		default:
+			return rawArgValue;
+	}
 }
 
 // Expose
