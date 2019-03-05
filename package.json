@@ -18,8 +18,7 @@
     "chokidar": "^2.0.2",
     "handlebars": "^4.0.11",
     "highlight.js": "^9.12.0",
-    "htmltidy": "0.0.6",
-    "libtidy": "^0.3.7",
+    "prettier": "1.16.4",
     "rimraf": "^2.6.2",
     "xmldom": "^0.1.27"
   }

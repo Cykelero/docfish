@@ -3,7 +3,7 @@ var Feedback = require('./feedback.js');
 var xmldom = require('xmldom');
 var Handlebars = require('handlebars');
 var Highlight = require('highlight.js');
-var tidy = require('libtidy').tidyBuffer;
+var prettier = require('prettier');
 
 var Klass;
 
@@ -194,37 +194,28 @@ module.exports.prototype = {
 			pageHTML: unitGeneratedHTML
 		});
 		
-		this.tidyHTML(completeHTML, function(error, tidiedHTML) {
+		this.prettifyHTML(completeHTML, function(error, tidiedHTML) {
 			if (error) {
-				console.warn(`An error occurred tidying ${unit.name}:`);
-				console.warn(error);
-				console.warn('The page has been generated untidied.');
+				console.warn(`An error occurred prettifying ${unit.name}:`);
+				console.warn(error.message);
+				console.warn('The page has been generated untidied.\n');
 			}
 			
 			Utils.writeFile(self.paths.build + unit.id + self.extensions.builtPage, tidiedHTML);
 		});
 	},
 	
-	tidyHTML: function(html, callback) {
-		tidy(html, {
-			'doctype': 'html5',
-			'coerce-endtags': false,
-			'indent': true,
-			'indent-spaces': 4,
-			'tab-size': 4,
-			'tidy-mark': false,
-			'wrap': 0,
-			//'preserve-entities': true
-		}, function(error, result) {
-			if (error) {
-				callback(error, html);
-			} else if (!result.output) {
-				callback(result.errlog, html);
-			} else {
-				tidiedHTML = result.output.toString().replace(/( {4})/g, '\t');
-				callback(null, tidiedHTML);
-			}
-		});
+	prettifyHTML: function(html, callback) {
+		try {
+			const prettierHTML = prettier.format(html, {
+				parser: 'html',
+				printWidth: Number.POSITIVE_INFINITY,
+				useTabs: true
+			});
+			callback(null, prettierHTML);
+		} catch (error) {
+			callback(error, html);
+		}
 	},
 	
 	textToolsFor: function(klass) {
