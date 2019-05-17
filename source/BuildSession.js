@@ -293,6 +293,21 @@ module.exports.prototype = {
 				return '<a href="' + linkHref + '" title="' + linkTitle + '"><code>' + linkText + '</code></a>';
 			});
 			
+			// // Sample blocks
+			text = text.replace(/<df-sample(\s+name="([^"]+)")?>((.|\n)*?)<\/df-sample>/g, function(tag, nameProperty, name, code) {
+				let generatedHTML = '';
+				
+				const highlightedCode = self.tools.code(code);
+				
+				if (name) {
+					const processedName = self.tools.text(name);
+					generatedHTML += `<h5><span class="caption">sample</span> ${processedName}</h5>`;
+				}
+				generatedHTML += `<pre class="sample free-sample hljs"><code>${highlightedCode}</code></pre>`;
+				
+				return generatedHTML;
+			});
+			
 			// // Arguments
 			text = text.replace(/<df-arg>/g, '<span class="class-method-argument">');
 			text = text.replace(/<\/df-arg>/g, '</span>');
