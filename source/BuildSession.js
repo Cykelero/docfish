@@ -318,7 +318,18 @@ module.exports.prototype = {
 		code: function(text) {
 			if (text === undefined || text === null) return text;
 			
-			return Highlight.highlight('javascript', this.tools.text(text)).value;
+			const processedText = this.tools.text(text);
+			
+			// Highlight header lines separately 
+			const headerParts = /^((#.*|\s*)\n)*/.exec(processedText);
+			const header = headerParts ? headerParts[0] : '';
+			const rest = processedText.slice(header.length);
+			
+			const result =
+				Highlight.highlight('javascript', header).value
+				+ Highlight.highlight('javascript', rest).value;
+			
+			return result;
 		},
 		
 		attribute: function(text) {
