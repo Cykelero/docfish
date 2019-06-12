@@ -68,7 +68,7 @@ module.exports.prototype = {
 	},
 	
 	buildPages: async function() {
-		let pageBuildPromises = [];
+		let pagePrettifyPromises = [];
 		
 		// Build pages
 		for (var unitName in this.units) {
@@ -77,19 +77,21 @@ module.exports.prototype = {
 			var unit = this.units[unitName];
 			
 			if (unit.public) {
-				const pageBuildPromise = this.buildUnitPage(unit);
-				pageBuildPromises.push(pageBuildPromise);
+				const pagePrettifyPromise = this.buildUnitPage(unit);
+				pagePrettifyPromises.push(pagePrettifyPromise);
 			}
 		}
 
-		const pageCount = pageBuildPromises.length;
+		const pageCount = pagePrettifyPromises.length;
 		const s = pageCount > 1 ? 's' : '';
-		
 		Feedback('main', `Built ${pageCount} page${s}.`);
 		
 		// Wait for prettification
-		await Promise.all(pageBuildPromises);
-		Feedback('main', `Prettified ${pageCount} page${s}.`);
+		const pagePrettifyResults = await Promise.all(pagePrettifyPromises);
+		
+		const prettifiedPageCount = pagePrettifyResults.filter(a => a).length;
+		const s2 = prettifiedPageCount > 1 ? 's' : '';
+		Feedback('main', `Prettified ${prettifiedPageCount} page${s2}.`);
 	},
 	
 	copyResources: function() {
@@ -216,10 +218,12 @@ module.exports.prototype = {
 		const prettifyPromise = this.prettify(pageHTML)
 			.then(prettyPageHTML => {
 				Utils.writeFile(pageBuildPath, prettyPageHTML);
+				return true;
 			}, prettificationError => {
 				console.warn(`An error occurred prettifying ${unit.name}:`);
-				console.warn(prettificationError.message);
-				console.warn('The page has been generated untidied.\n');
+				console.warn(prettificationError);
+				console.warn('The page has been generated but not prettified.\n');
+				return false;
 			});
 		
 		// Write non-pretty page in the meantime

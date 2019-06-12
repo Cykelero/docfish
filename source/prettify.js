@@ -9,6 +9,6 @@ process.on('message', function(source) {
 		});
 		process.send({error: null, result: prettierHTML});
 	} catch (error) {
-		process.send({error: error, result: html});
+		process.send({error: error.message, result: null});
 	}
 });
