@@ -129,10 +129,16 @@ h5 .caption:after {
 }
 
 a {
-	border-bottom: 1px solid #e73a8b;
-	
-	text-decoration: none;
-	color: #e73a8b;
+	color: #219cd7;
+
+	text-underline-offset: 3px;
+}
+
+@supports not (text-underline-offset: 1px) {
+	a {
+		text-decoration: none;
+		border-bottom: 1px solid #219cd7;
+	}
 }
 
 ul, ol {
