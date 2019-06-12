@@ -61,12 +61,12 @@ var buildOptions = {
 	buildPath: Args.values.destination,
 };
 
-function build() {
-	Feedback('main', 'Building…');
+async function build() {
+	Feedback('main', 'Building...');
 	
 	var session = new BuildSession(buildOptions);
 	
-	session.build();
+	await session.build();
 	
 	Feedback('main', 'Done!');
 }

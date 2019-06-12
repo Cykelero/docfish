@@ -1,9 +1,11 @@
-var Utils = require('./utilities.js');
-var Feedback = require('./feedback.js');
-var xmldom = require('xmldom');
-var Handlebars = require('handlebars');
-var Highlight = require('highlight.js');
-var prettier = require('prettier');
+const childProcess = require('child_process');
+
+const xmldom = require('xmldom');
+const Handlebars = require('handlebars');
+const Highlight = require('highlight.js');
+
+const Utils = require('./utilities.js');
+const Feedback = require('./feedback.js');
 
 var Klass;
 
@@ -30,11 +32,12 @@ module.exports = function BuildSession(options) {
 };
 
 module.exports.prototype = {
-	build: function() {
+	build: async function() {
 		this.resetBuildFolder();
-		this.loadSourceUnits();
-		this.buildPages();
+		
 		this.copyResources();
+		this.loadSourceUnits();
+		await this.buildPages();
 	},
 	
 	// Build steps
@@ -64,14 +67,29 @@ module.exports.prototype = {
 		recursivelyLoadFromFolder(this.paths.unitSource);
 	},
 	
-	buildPages: function() {
+	buildPages: async function() {
+		let pageBuildPromises = [];
+		
+		// Build pages
 		for (var unitName in this.units) {
 			if (!this.units.hasOwnProperty(unitName)) continue;
 			
 			var unit = this.units[unitName];
 			
-			if (unit.public) this.buildUnitPage(unit);
+			if (unit.public) {
+				const pageBuildPromise = this.buildUnitPage(unit);
+				pageBuildPromises.push(pageBuildPromise);
+			}
 		}
+
+		const pageCount = pageBuildPromises.length;
+		const s = pageCount > 1 ? 's' : '';
+		
+		Feedback('main', `Built ${pageCount} page${s}.`);
+		
+		// Wait for prettification
+		await Promise.all(pageBuildPromises);
+		Feedback('main', `Prettified ${pageCount} page${s}.`);
 	},
 	
 	copyResources: function() {
@@ -185,37 +203,46 @@ module.exports.prototype = {
 	
 	// HTML generation
 	buildUnitPage: function(unit) {
-		var self = this;
+		const unitHTML = unit.getHTML();
 		
-		var unitGeneratedHTML = unit.getHTML();
-		
-		var completeHTML = this.pageTemplate({
+		const pageHTML = this.pageTemplate({
 			title: unit.name ? `${unit.name} — ${this.productName}` : this.productName,
-			pageHTML: unitGeneratedHTML
+			pageHTML: unitHTML
 		});
 		
-		this.prettifyHTML(completeHTML, function(error, tidiedHTML) {
-			if (error) {
+		const pageBuildPath = this.paths.build + unit.id + this.extensions.builtPage;
+		
+		// Prettify and write page
+		const prettifyPromise = this.prettify(pageHTML)
+			.then(prettyPageHTML => {
+				Utils.writeFile(pageBuildPath, prettyPageHTML);
+			}, prettificationError => {
 				console.warn(`An error occurred prettifying ${unit.name}:`);
-				console.warn(error.message);
+				console.warn(prettificationError.message);
 				console.warn('The page has been generated untidied.\n');
-			}
-			
-			Utils.writeFile(self.paths.build + unit.id + self.extensions.builtPage, tidiedHTML);
-		});
+			});
+		
+		// Write non-pretty page in the meantime
+		Utils.writeFile(pageBuildPath, pageHTML);
+		
+		return prettifyPromise;
 	},
 	
-	prettifyHTML: function(html, callback) {
-		try {
-			const prettierHTML = prettier.format(html, {
-				parser: 'html',
-				printWidth: Number.POSITIVE_INFINITY,
-				useTabs: true
+	prettify: function(source, callback) {
+		return new Promise((resolve, reject) => {
+			const prettifyProcess = childProcess.fork(__dirname + '/prettify.js');
+			prettifyProcess.send(source);
+		
+			prettifyProcess.on('message', function({error, result}) {
+				prettifyProcess.kill();
+				
+				if (error) {
+					reject(error);
+				} else {
+					resolve(result);
+				}
 			});
-			callback(null, prettierHTML);
-		} catch (error) {
-			callback(error, html);
-		}
+		});
 	},
 	
 	textToolsFor: function(klass) {
