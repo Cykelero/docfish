@@ -45,6 +45,8 @@ module.exports = {
 	
 	writeFile: fs.writeFileSync,
 	
+	copyFile: fs.copyFileSync,
+	
 	emptyFolder: function(path) {
 		rimraf.sync(path);
 	},

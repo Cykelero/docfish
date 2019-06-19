@@ -56,6 +56,9 @@ try {
 
 var buildOptions = {
 	name: metadata.name || 'Documentation',
+	version: metadata.version || null,
+	themeColor: metadata.themeColor || '#219cd7', // link blue
+	logoPath: metadata.logoPath || null,
 	globalPrefix: metadata.globalPrefix || null,
 	sourcePath: Args.values.source,
 	buildPath: Args.values.destination,

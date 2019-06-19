@@ -1,4 +1,5 @@
 const childProcess = require('child_process');
+const path = require('path');
 
 const xmldom = require('xmldom');
 const Handlebars = require('handlebars');
@@ -24,8 +25,8 @@ module.exports = function BuildSession(options) {
 	
 	this.pageTemplate = this.getTemplate('_Page');
 	
-	this.productName = options.name;
-	this.globalPrefix = options.globalPrefix;
+	this.options = options;
+	this.logoFileName = this.options.logoPath ? path.basename(this.options.logoPath) : null;
 	
 	this.units = {};
 	this.classes = [];
@@ -95,13 +96,22 @@ module.exports.prototype = {
 	},
 	
 	copyResources: function() {
-		var self = this;
-		
-		var resources = Utils.getFolderContents(this.paths.resourcesSource);
-		resources.forEach(function(filename) {
-			var resourceContents = Utils.readFile(self.paths.resourcesSource + filename);
-			Utils.writeFile(self.paths.resourcesBuild + filename, resourceContents);
+		// Docfish resources
+		const resources = Utils.getFolderContents(this.paths.resourcesSource);
+		resources.forEach(filename => {
+			Utils.copyFile(
+				this.paths.resourcesSource + filename,
+				this.paths.resourcesBuild + filename
+			);
 		});
+		
+		// Docset resources
+		if (this.options.logoPath) {
+			Utils.copyFile(
+				this.paths.unitSource + this.options.logoPath,
+				this.paths.resourcesBuild + this.logoFileName
+			);
+		}
 	},
 	
 	// Source unit management
@@ -208,7 +218,11 @@ module.exports.prototype = {
 		const unitHTML = unit.getHTML();
 		
 		const pageHTML = this.pageTemplate({
-			title: unit.name ? `${unit.name} — ${this.productName}` : this.productName,
+			productName: this.options.name,
+			productVersion: this.options.version,
+			productThemeColor: this.options.themeColor,
+			productLogoPath: 'resources/' + this.logoFileName,
+			pageName: unit.name,
 			pageHTML: unitHTML
 		});
 		
@@ -402,7 +416,7 @@ module.exports.prototype = {
 	
 	// Other
 	getGlobalPrefix: function() {
-		return this.globalPrefix;
+		return this.options.globalPrefix;
 	},
 	
 	typeToKind: function(type) {

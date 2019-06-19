@@ -6,15 +6,8 @@
 	transition-duration: .28s;
 }
 
-.page {
-	display: block;
-	
-	margin: auto;
-	margin-top: 37px;
-	margin-bottom: 50px;
-	
-	padding: 0 20px;
-	max-width: 800px;
+body {
+	margin: 0;
 	
 	line-height: 1.65;
 	font-size: 18px;
@@ -25,7 +18,49 @@
 	-moz-text-size-adjust: none;
 	-ms-text-size-adjust: none;
 	text-size-adjust: none;
-	/* -webkit-tap-highlight-color: rgba(129, 42, 255, .5); */
+}
+
+nav {
+	margin: auto;
+	
+	padding: 0 20px;
+	max-width: 800px;
+}
+
+nav a {
+	text-decoration: none;
+}
+
+.product-logo {
+	vertical-align: middle;
+	
+	width: 32px;
+	height: 32px;
+}
+
+.product-name {
+	line-height: 3.5;
+	letter-spacing: 0.53px;
+	font-size: 22px;
+	font-weight: 500;
+}
+
+.product-version {
+	margin-left: 1px;
+	
+	letter-spacing: 0.11px;
+	font-size: 17px;
+	opacity: 0.68;
+	font-weight: 500;
+}
+
+.page {
+	margin: auto;
+	margin-top: 13px;
+	margin-bottom: 50px;
+	
+	padding: 0 20px;
+	max-width: 800px;
 }
 
 h1, h2, h3 {
@@ -128,15 +163,15 @@ h5 .caption:after {
 	content: ':';
 }
 
-a {
+.page a {
 	color: #219cd7;
-
 	text-underline-offset: 3px;
 }
 
 @supports not (text-underline-offset: 1px) {
-	a {
+	.page a {
 		text-decoration: none;
+		
 		border-bottom: 1px solid #219cd7;
 	}
 }
