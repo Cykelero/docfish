@@ -48,11 +48,22 @@ module.exports = {
 	copyFile: fs.copyFileSync,
 	
 	emptyFolder: function(path) {
-		rimraf.sync(path);
+		rimraf.sync(path + '*');
 	},
 	
-	createFolder: function(path) {
-		fs.mkdirSync(path);
+	createFolder: function(path, forgiving) {
+		let folderExists;
+		
+		try {
+			const folderStats = fs.statSync(path);
+			folderExists = !folderStats.isFile();
+		} catch(e) {
+			folderExists = false;
+		}
+		
+		if (!folderExists) {
+			fs.mkdirSync(path);
+		}
 	},
 	
 	getFolderContents: function(path) {

@@ -45,7 +45,7 @@ module.exports.prototype = {
 	resetBuildFolder: function() {
 		Utils.emptyFolder(this.paths.build);
 		
-		Utils.createFolder(this.paths.build);
+		Utils.createFolder(this.paths.build, true);
 		Utils.createFolder(this.paths.resourcesBuild);
 	},
 	
