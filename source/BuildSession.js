@@ -91,8 +91,11 @@ module.exports.prototype = {
 		const pagePrettifyResults = await Promise.all(pagePrettifyPromises);
 		
 		const prettifiedPageCount = pagePrettifyResults.filter(a => a).length;
-		const s2 = prettifiedPageCount > 1 ? 's' : '';
-		Feedback('main', `Prettified ${prettifiedPageCount} page${s2}.`);
+		if (prettifiedPageCount === pageCount) {
+			Feedback('main', `Prettified ${pageCount} page${s}.`);
+		} else {
+			Feedback('main', `Prettified ${prettifiedPageCount}/${pageCount} page${s}.`);
+		}
 	},
 	
 	copyResources: function() {
