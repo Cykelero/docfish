@@ -6,13 +6,35 @@
 	transition-duration: .28s;
 }
 
+:root {
+	--background-color: white;
+	--separator-color: #d8d8d8;
+	
+	--body-text-color: rgb(34, 34, 34);
+	--heading-text-color: black;
+	--base-code-color: #2f2f2f;
+}
+	
+@media (prefers-color-scheme: dark) {
+	:root {
+		--background-color: rgb(20, 20, 20);
+		--separator-color: rgba(255, 255, 255, 0.11);
+		
+		--body-text-color: rgba(255, 255, 255, 0.78);
+		--heading-text-color: rgba(255, 255, 255, 0.94);
+		--base-code-color: rgba(255, 255, 255, 0.78);
+	}
+}
+
 body {
 	margin: 0;
+	
+	background: var(--background-color);
 	
 	line-height: 1.65;
 	font-size: 18px;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	color: #222222;
+	color: var(--body-text-color);
 	
 	-webkit-text-size-adjust: none;
 	-moz-text-size-adjust: none;
@@ -67,7 +89,7 @@ nav a {
 h1, h2, h3 {
 	line-height: 1.2;
 	
-	color: black;
+	color: var(--heading-text-color);
 }
 
 h1 {
@@ -206,7 +228,7 @@ table td:first-child {
 }
 
 table td:not(:first-child) {
-	border-left: 1px solid #d8d8d8;
+	border-left: 1px solid var(--separator-color);
 }
 
 pre {

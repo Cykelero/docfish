@@ -1,7 +1,6 @@
 
 .hljs {
-	background: white;
-	color: #2f2f2f;
+	color: var(--base-code-color);
 }
 
 /* Green comments, object type */

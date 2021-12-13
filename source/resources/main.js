@@ -112,7 +112,7 @@ Member.prototype = {
 				
 				var maskNode = document.createElement("div");
 				maskNode.style.display = "block";
-				maskNode.style.background = "white";
+				maskNode.style.background = "var(--background-color)";
 				maskNode.style.width = "100%";
 				maskNode.style.height = Math.abs(offset) + "px";
 				maskNode.style.marginTop = maskTopMargin + "px";
