@@ -340,7 +340,7 @@ h3 + .class-member {
 
 /* Shared */
 
-code, table td:first-child, .class-method-argument {
+code, table td:first-child, .discussion .class-method-argument {
 	font-size: .9em;
 	font-family: Menlo, Monaco, "Lucida Console", monospace;
 }
