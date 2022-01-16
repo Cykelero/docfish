@@ -1,7 +1,7 @@
 const childProcess = require('child_process');
 const path = require('path');
 
-const xmldom = require('xmldom');
+const xmldom = require('@xmldom/xmldom');
 const Handlebars = require('handlebars');
 const Highlight = require('highlight.js');
 
@@ -374,8 +374,8 @@ module.exports.prototype = {
 			const rest = processedText.slice(header.length);
 			
 			const result =
-				Highlight.highlight('javascript', header).value
-				+ Highlight.highlight('javascript', rest).value;
+				Highlight.highlight(header, { language: 'javascript' }).value
+				+ Highlight.highlight(rest, { language: 'javascript' }).value;
 			
 			return result;
 		},
