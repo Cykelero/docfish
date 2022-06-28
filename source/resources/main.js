@@ -328,10 +328,12 @@ document.addEventListener("DOMContentLoaded", function() {
 			var targetId = (targetComponents[2] || "").slice(1);
 			if (targetId.length) {
 				aNode.addEventListener("click", function(targetId, event) {
-					event.preventDefault();
-					
 					var member = getMemberById(targetId);
-					if (member) member.setFolded(false, true, true);
+					if (member) {
+						event.preventDefault();
+						
+						member.setFolded(false, true, true);
+					}
 				}.bind(null, targetId));
 			}
 		}
